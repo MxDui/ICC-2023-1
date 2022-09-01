@@ -26,7 +26,13 @@ public class Estudiante {
                       int    cuenta,
                       double promedio,
                       int    edad) {
+        this.nombre    = nombre;
         // Aquí va su código.
+
+        this.cuenta    = cuenta;
+        this.promedio  = promedio;
+        this.edad      = edad;
+
     }
 
     /**
@@ -34,7 +40,7 @@ public class Estudiante {
      * @return el nombre del estudiante.
      */
     public String getNombre() {
-        // Aquí va su código.
+        return nombre;
     }
 
     /**
@@ -42,7 +48,7 @@ public class Estudiante {
      * @param nombre el nuevo nombre del estudiante.
      */
     public void setNombre(String nombre) {
-        // Aquí va su código.
+        this.nombre = nombre;
     }
 
     /**
@@ -51,6 +57,7 @@ public class Estudiante {
      */
     public int getCuenta() {
         // Aquí va su código.
+        return cuenta;
     }
 
     /**
@@ -59,6 +66,7 @@ public class Estudiante {
      */
     public void setCuenta(int cuenta) {
         // Aquí va su código.
+        this.cuenta = cuenta;
     }
 
     /**
@@ -67,6 +75,7 @@ public class Estudiante {
      */
     public double getPromedio() {
         // Aquí va su código.
+        return promedio ;
     }
 
     /**
@@ -75,6 +84,7 @@ public class Estudiante {
      */
     public void setPromedio(double promedio) {
         // Aquí va su código.
+        this.promedio = promedio;
     }
 
     /**
@@ -83,6 +93,7 @@ public class Estudiante {
      */
     public int getEdad() {
         // Aquí va su código.
+        return edad;
     }
 
     /**
@@ -91,6 +102,7 @@ public class Estudiante {
      */
     public void setEdad(int edad) {
         // Aquí va su código.
+        this.edad = edad;
     }
 
     /**
@@ -99,6 +111,7 @@ public class Estudiante {
      */
     public String toString() {
         // Aquí va su código.
+        return String.format("Nombre   : %s\n" + "Cuenta   : %09d\n" +  "Promedio : %2.2f\n" + "Edad     : %d" , nombre, cuenta, promedio, edad);
     }
 
     /**
@@ -110,6 +123,12 @@ public class Estudiante {
      *         <code>false</code> en otro caso.
      */
     public boolean equals(Estudiante estudiante) {
+        if (estudiante == null)
+            return false;
         // Aquí va su código.
+        if(nombre.equals(estudiante.nombre) && cuenta == estudiante.cuenta && promedio == estudiante.promedio && edad == estudiante.edad)
+            return true;
+        else
+            return false;
     }
 }

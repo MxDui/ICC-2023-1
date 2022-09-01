@@ -30,6 +30,9 @@ public class ListaEstudiante {
         /* Construye un nodo con un elemento. */
         private Nodo(Estudiante elemento) {
             // Aquí va su código.
+            this.elemento = elemento;
+            
+
         }
 
         /**
@@ -38,6 +41,7 @@ public class ListaEstudiante {
          */
         public Nodo getAnterior() {
             // Aquí va su código.
+            return anterior;
         }
 
         /**
@@ -46,6 +50,8 @@ public class ListaEstudiante {
          */
         public Nodo getSiguiente() {
             // Aquí va su código.
+            return siguiente;
+
         }
 
         /**
@@ -54,6 +60,7 @@ public class ListaEstudiante {
          */
         public Estudiante get() {
             // Aquí va su código.
+            return elemento;
         }
     }
 
@@ -70,6 +77,7 @@ public class ListaEstudiante {
      */
     public int getLongitud() {
         // Aquí va su código.
+        return longitud;
     }
 
     /**
@@ -79,6 +87,7 @@ public class ListaEstudiante {
      */
     public boolean esVacia() {
         // Aquí va su código.
+        return cabeza == null;
     }
 
     /**
@@ -89,6 +98,24 @@ public class ListaEstudiante {
      */
     public void agregaFinal(Estudiante elemento) {
         // Aquí va su código.
+        // Add element to the end of the list. If the list is empty, the element
+        // is the first and last.
+
+        if (elemento == null) {
+            return;
+        }
+        if (esVacia()) {
+            cabeza = new Nodo(elemento);
+            rabo = cabeza;
+            longitud++;
+        } else {
+            Nodo nuevo = new Nodo(elemento);
+            rabo.siguiente = nuevo;
+            nuevo.anterior = rabo;
+            rabo = nuevo;
+            longitud++;
+        }
+
     }
 
     /**
@@ -99,6 +126,20 @@ public class ListaEstudiante {
      */
     public void agregaInicio(Estudiante elemento) {
         // Aquí va su código.
+        if( elemento == null){
+           return;
+           
+        }
+        if (esVacia()) {
+            cabeza = new Nodo(elemento);
+            rabo = cabeza;
+            longitud++;
+        } else {
+            cabeza.anterior = new Nodo(elemento);
+            cabeza.anterior.siguiente = cabeza;
+            cabeza = cabeza.anterior;
+            longitud++;
+        }
     }
 
     /**
@@ -117,6 +158,29 @@ public class ListaEstudiante {
      */
     public void inserta(int i, Estudiante elemento) {
         // Aquí va su código.
+        if (elemento == null) {
+            return;
+        }
+        if(esVacia()){
+            cabeza = new Nodo(elemento);
+            rabo = cabeza;
+            longitud++;
+        }else if(i <= 0){
+            agregaInicio(elemento);
+        }else if(i >= longitud){
+            agregaFinal(elemento);
+        }else{
+            Nodo aux = cabeza;
+            for(int j = 0; j < i; j++){
+                aux = aux.siguiente;
+            }
+            Nodo nuevo = new Nodo(elemento);
+            nuevo.anterior = aux.anterior;
+            nuevo.siguiente = aux;
+            aux.anterior.siguiente = nuevo;
+            aux.anterior = nuevo;
+            longitud++;
+        }
     }
 
     /**
@@ -129,6 +193,24 @@ public class ListaEstudiante {
         eliminaNodo(nodo);
     }
 
+    /* 
+     * Método auxiliar que busca un nodo en la lista. Si el nodo no está en la
+     * lista, regresa <code>null</code>.
+     */
+
+    private Nodo buscaNodo(Estudiante elemento) {
+        // Aquí va su código.
+        Nodo aux = cabeza;
+        while(aux != null){
+            if(aux.elemento.equals(elemento)){
+                return aux;
+            }
+            aux = aux.siguiente;
+        }
+        return null;
+    }
+    
+
     /**
      * Elimina el primer elemento de la lista y lo regresa.
      * @return el primer elemento de la lista antes de eliminarlo, o
@@ -136,6 +218,36 @@ public class ListaEstudiante {
      */
     public Estudiante eliminaPrimero() {
         // Aquí va su código.
+        if (esVacia()) {
+            return null;
+        }
+        Estudiante elemento = cabeza.elemento;
+        eliminaNodo(cabeza);
+        return elemento;
+        
+    }
+
+    /**
+     * Elimina un elemento de la lista en un índice explícito.
+     * @return  el elemento que estaba en el índice especificado, o
+     *         <code>null</code> si la lista es vacía.
+     */
+
+    private void eliminaNodo(Nodo nodo) {
+        if (nodo == null) {
+            return;
+        }
+        if (nodo == cabeza) {
+            cabeza = cabeza.siguiente;
+        } else {
+            nodo.anterior.siguiente = nodo.siguiente;
+        }
+        if (nodo == rabo) {
+            rabo = rabo.anterior;
+        } else {
+            nodo.siguiente.anterior = nodo.anterior;
+        }
+        longitud--;
     }
 
     /**
@@ -145,6 +257,12 @@ public class ListaEstudiante {
      */
     public Estudiante eliminaUltimo() {
         // Aquí va su código.
+        if (esVacia()) {
+            return null;
+        }
+        Estudiante elemento = rabo.elemento;
+        eliminaNodo(rabo);
+        return elemento;
     }
 
     /**
@@ -155,6 +273,14 @@ public class ListaEstudiante {
      */
     public boolean contiene(Estudiante elemento) {
         // Aquí va su código.
+        Nodo aux = cabeza;
+        while(aux != null){
+            if(aux.elemento.equals(elemento)){
+                return true;
+            }
+            aux = aux.siguiente;
+        }
+        return false;
     }
 
     /**
@@ -163,6 +289,13 @@ public class ListaEstudiante {
      */
     public ListaEstudiante reversa() {
         // Aquí va su código.
+        ListaEstudiante reversa = new ListaEstudiante();
+        Nodo aux = cabeza;
+        while(aux != null){
+            reversa.agregaInicio(aux.elemento);
+            aux = aux.siguiente;
+        }
+        return reversa;
     }
 
     /**
@@ -172,6 +305,13 @@ public class ListaEstudiante {
      */
     public ListaEstudiante copia() {
         // Aquí va su código.
+        ListaEstudiante copia = new ListaEstudiante();
+        Nodo aux = cabeza;
+        while(aux != null){
+            copia.agregaFinal(aux.elemento);
+            aux = aux.siguiente;
+        }
+        return copia;
     }
 
     /**
@@ -179,6 +319,10 @@ public class ListaEstudiante {
      */
     public void limpia() {
         // Aquí va su código.
+        cabeza = null;
+        rabo = null;
+        longitud = 0;
+
     }
 
     /**
@@ -188,6 +332,10 @@ public class ListaEstudiante {
      */
     public Estudiante getPrimero() {
         // Aquí va su código.
+        if(esVacia()){
+            return null;
+        }
+        return cabeza.elemento;
     }
 
     /**
@@ -197,6 +345,10 @@ public class ListaEstudiante {
      */
     public Estudiante getUltimo() {
         // Aquí va su código.
+        if(esVacia()){
+            return null;
+        }
+        return rabo.elemento;
     }
 
     /**
@@ -208,6 +360,14 @@ public class ListaEstudiante {
      */
     public Estudiante get(int i) {
         // Aquí va su código.
+        if(i < 0 || i >= longitud){
+            return null;
+        }
+        Nodo aux = cabeza;
+        for(int j = 0; j < i; j++){
+            aux = aux.siguiente;
+        }
+        return aux.elemento;
     }
 
     /**
@@ -218,6 +378,16 @@ public class ListaEstudiante {
      */
     public int indiceDe(Estudiante elemento) {
         // Aquí va su código.
+        Nodo aux = cabeza;
+        int i = 0;
+        while(aux != null){
+            if(aux.elemento.equals(elemento)){
+                return i;
+            }
+            aux = aux.siguiente;
+            i++;
+        }
+        return -1;
     }
 
     /**
@@ -226,6 +396,16 @@ public class ListaEstudiante {
      */
     public String toString() {
         // Aquí va su código.
+        if(esVacia()){
+            return "[]";
+        }
+        String s = "[";
+        Nodo aux = cabeza;
+        while(aux != null){
+            s += aux.elemento + ", ";
+            aux = aux.siguiente;
+        }
+        return s.substring(0, s.length() - 2) + "]";
     }
 
     /**
@@ -236,6 +416,22 @@ public class ListaEstudiante {
      */
     public boolean equals(ListaEstudiante lista) {
         // Aquí va su código.
+        if(lista == null){
+            return false;
+        }
+        if(longitud != lista.longitud){
+            return false;
+        }
+        Nodo aux = cabeza;
+        Nodo aux2 = lista.cabeza;
+        while(aux != null){
+            if(!aux.elemento.equals(aux2.elemento)){
+                return false;
+            }
+            aux = aux.siguiente;
+            aux2 = aux2.siguiente;
+        }
+        return true;
     }
 
     /**
@@ -244,6 +440,8 @@ public class ListaEstudiante {
      */
     public Nodo getCabeza() {
         // Aquí va su código.
+        return cabeza;
+
     }
 
     /**
@@ -252,5 +450,6 @@ public class ListaEstudiante {
      */
     public Nodo getRabo() {
         // Aquí va su código.
+        return rabo;
     }
 }
