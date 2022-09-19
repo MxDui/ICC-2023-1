@@ -485,15 +485,20 @@ public class ListaEstudiante {
     public boolean equals(ListaEstudiante lista) {
         if (lista == null || longitud != lista.longitud)
             return false;
-        Nodo n1 = cabeza;
-        Nodo n2 = lista.cabeza;
-        while (n1 != null && n2 != null) {
-            if (!n1.elemento.equals(n2.elemento))
-                return false;
-            n1 = n1.siguiente;
-            n2 = n2.siguiente;
+        return equals(cabeza, lista.cabeza);
+    }
+
+    public boolean equals(Nodo nodo, Nodo nodo2) {
+        if (nodo == null && nodo2 == null) {
+            return true;
         }
-        return true;
+        if (nodo == null || nodo2 == null) {
+            return false;
+        }
+        if (!nodo.elemento.equals(nodo2.elemento)) {
+            return false;
+        }
+        return equals(nodo.siguiente, nodo2.siguiente);
     }
 
     /**
