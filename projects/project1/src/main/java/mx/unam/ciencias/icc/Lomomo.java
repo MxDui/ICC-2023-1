@@ -22,7 +22,7 @@ public class Lomomo implements Registro {
      * @param peso   el peso del lomomo.
      * @param color  el color del lomomo.
      */
-    public Lomomo(String nombre, String raza, int edad, double peso) {
+    public Lomomo(String nombre, String raza, int edad, double peso, String color) {
         this.nombre = nombre;
         this.raza = raza;
         this.color = color;
@@ -156,7 +156,7 @@ public class Lomomo implements Registro {
      **/
     @Override
     public String seria() {
-        return String.format("%s\t%s\t%d\t%f\t%s", nombre, raza, edad, peso, color);
+        return String.format("%s\t%s\t%d\t%f\t%s\n", nombre, raza, edad, peso, color);
     }
 
     /**
@@ -168,15 +168,15 @@ public class Lomomo implements Registro {
     @Override
     public void deseria(String linea) {
         String[] campos = linea.split("\t");
-        if (campos.length != 4)
+        if (campos.length != 5)
             throw new IllegalArgumentException("Línea inválida");
         try {
             nombre = campos[0];
             raza = campos[1];
             edad = Integer.parseInt(campos[2]);
-
-            peso = Double.parseDouble(campos[3].replace(
-                    "\n", "").replace("\r", ""));
+            peso = Double.parseDouble(campos[3]);
+            color = campos[4].replace(
+                    "\n", "").replace("\r", "");
 
         } catch (NumberFormatException nfe) {
             throw new IllegalArgumentException("Uno de los campos no es un número");
@@ -204,10 +204,63 @@ public class Lomomo implements Registro {
 
     }
 
+    /**
+     * Nos dice si el estudiante casa el valor dado en el campo especificado.
+     * 
+     * @param campo el campo que hay que casar.
+     * @param valor el valor con el que debe casar el campo del registro.
+     * @return <code>true</code> si:
+     *         <ul>
+     *         <li><code>campo</code> es {@link CampoEstudiante#NOMBRE} y
+     *         <code>valor</code> es instancia de {@link String} y es una
+     *         subcadena del nombre del estudiante.</li>
+     *         <li><code>campo</code> es {@link CampoEstudiante#CUENTA} y
+     *         <code>valor</code> es instancia de {@link Integer} y su
+     *         valor entero es menor o igual a la cuenta del
+     *         estudiante.</li>
+     *         <li><code>campo</code> es {@link CampoEstudiante#PROMEDIO} y
+     *         <code>valor</code> es instancia de {@link Double} y su
+     *         valor doble es menor o igual al promedio del
+     *         estudiante.</li>
+     *         <li><code>campo</code> es {@link CampoEstudiante#EDAD} y
+     *         <code>valor</code> es instancia de {@link Integer} y su
+     *         valor entero es menor o igual a la edad del
+     *         estudiante.</li>
+     *         </ul>
+     *         <code>false</code> en otro caso.
+     * @throws IllegalArgumentException si el campo no es instancia de {@link
+     *                                  CampoEstudiante}.
+     */
     @Override
     public boolean casa(Enum campo, Object valor) {
-        // TODO Auto-generated method stub
-        return false;
+
+        if (!(campo instanceof CampoLomomo))
+            throw new IllegalArgumentException("El campo no es un campo de lomomo");
+        CampoLomomo campoLomomo = (CampoLomomo) campo;
+        switch (campoLomomo) {
+            case NOMBRE:
+                if (!(valor instanceof String))
+                    return false;
+                return nombre.contains((String) valor);
+            case RAZA:
+                if (!(valor instanceof String))
+                    return false;
+                return raza.contains((String) valor);
+            case EDAD:
+                if (!(valor instanceof Integer))
+                    return false;
+                return edad <= (Integer) valor;
+            case PESO:
+                if (!(valor instanceof Double))
+                    return false;
+                return peso <= (Double) valor;
+            case COLOR:
+                if (!(valor instanceof String))
+                    return false;
+                return color.contains((String) valor);
+            default:
+                return false;
+        }
     }
 
 }
