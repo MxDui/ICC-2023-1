@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Aplicacion {
@@ -118,7 +117,7 @@ public class Aplicacion {
     }
 
     public void invertirOrden() {
-       
+
     }
 
     public void invertirOrden(String archivo) {
