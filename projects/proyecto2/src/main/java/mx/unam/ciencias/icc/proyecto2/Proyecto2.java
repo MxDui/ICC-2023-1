@@ -4,24 +4,26 @@ public class Proyecto2 {
 
     private static final int ERROR_USO = 1;
 
-    private static void uso() {
+    static void uso() {
 
-        System.out.println("Uso: java -jar proyecto2.jar [opciones] archivo");
+        System.out.println("Uso: java -jar proyecto2.jar [opciones]");
         System.out.println("Opciones: ");
-        System.out.println("  -r, \t\tOrdena de forma inversa.");
-        System.out.println("  -o archivo salida, \t\tExporta el archivo ordenado a un archivo.");
+        System.out.println("  -r [archivo], \t\tOrdena de forma inversa el archivo.");
+        System.out.println("  -o [archivo] , \t\tOrdena el archivo.");
+        System.out.println("  -o [archivo] [archivo salida], \t\tExporta el archivo ordenado a un archivo de salida.");
 
         System.exit(ERROR_USO);
     }
 
     public static void main(String[] args) {
 
-        if (args.length != 1)
+        if (args.length < 1)
             uso();
 
         try {
-            // Here execute the program with class Aplicacion
-            
+
+            new Aplicacion(args);
+
         } catch (IllegalArgumentException iae) {
             System.err.println(iae.getMessage());
             System.exit(ERROR_USO);
