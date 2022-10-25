@@ -28,17 +28,6 @@ public class Aplicacion {
             return opcion;
         }
 
-        public static Opcion getModo(String opcion) {
-            switch (opcion) {
-                case "-o":
-                    return ORDERNAR;
-                case "-r":
-                    return INVERTIR;
-                default:
-                    throw new IllegalArgumentException("Opcion no valida");
-            }
-        }
-
     }
 
     public Aplicacion(String[] args) {
@@ -128,35 +117,8 @@ public class Aplicacion {
         }
     }
 
-    public void invertirOrden() throws IOException {
-        // this shit is not working
-        // try {
-        // Scanner sc = new Scanner(System.in);
-        // sc.useDelimiter("\n");
-        // Lista<Registro> lista = new Lista<Registro>();
-        // String linea = sc.nextLine();
-        // while (linea != null) {
-        // lista.agregaFinal(new Registro(linea));
-        // linea = sc.nextLine();
-        // }
-        // lista = lista.mergeSort(
-        // (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
-
-        // BufferedWriter bw = new BufferedWriter(
-        // new OutputStreamWriter(new FileOutputStream("reversa.txt"), "UTF-8"));
-        // for (Registro r : lista) {
-        // bw.write(r.getLinea());
-        // bw.newLine();
-        // }
-        // bw.close();
-
-        // sc.close();
-
-        // } catch (InputMismatchException ime) {
-        // System.err.println("Error al leer el archivo.");
-        // System.exit(1);
-        // }
-
+    public void invertirOrden() {
+       
     }
 
     public void invertirOrden(String archivo) {
@@ -238,11 +200,7 @@ public class Aplicacion {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
                 ordenar();
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                try {
-                    invertirOrden();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                invertirOrden();
             } else {
                 throw new IllegalArgumentException("Opcion no valida");
             }
