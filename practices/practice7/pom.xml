@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <groupId>mx.unam.ciencias.icc</groupId>
-  <artifactId>proyecto</artifactId>
+  <artifactId>practica</artifactId>
   <version>ICC</version>
   <packaging>jar</packaging>
 
-  <name>Proyecto 1</name>
+  <name>Práctica 7</name>
   <description>
-    Proyecto 1 de Introducción a Ciencias de la Computación
+    Práctica 7 de Introducción a Ciencias de la Computación: Iteradores.
   </description>
-
+  <url>https://aztlan.fciencias.unam.mx/gitlab/2023-1-icc/practica7</url>
   <organization>
-    <name>David Rivera Morales</name>
+    <name>Canek Peláez Valdés</name>
+    <url>https://aztlan.fciencias.unam.mx/~canek/</url>
   </organization>
 
   <properties>
@@ -60,16 +63,16 @@
       </plugin>
 
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-jar-plugin</artifactId>
+	<groupId>org.apache.maven.plugins</groupId>
+	<artifactId>maven-jar-plugin</artifactId>
         <version>3.2.0</version>
-        <configuration>
-          <archive>
-            <manifest>
-              <mainClass>mx.unam.ciencias.icc.Proyecto1</mainClass>
-            </manifest>
-          </archive>
-        </configuration>
+	<configuration>
+	  <archive>
+	    <manifest>
+	      <mainClass>mx.unam.ciencias.icc.Practica7</mainClass>
+	    </manifest>
+	  </archive>
+	</configuration>
       </plugin>
 
       <plugin>
@@ -86,7 +89,7 @@
 
     </plugins>
 
-    <finalName>project1</finalName>
+    <finalName>practica7</finalName>
   </build>
 
   <reporting>
@@ -103,16 +106,14 @@
           <version>false</version>
           <use>true</use>
           <windowtitle>Introducción a Ciencias de la Computación</windowtitle>
-          <doctitle>
-            <![CDATA[<h1>Introducción a Ciencias de la Computación</h1>]]>
-          </doctitle>
+          <doctitle><![CDATA[<h1>Introducción a Ciencias de la Computación</h1>]]></doctitle>
         </configuration>
       </plugin>
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>3.0.0-M5</version>
+        <version>3.0.0-M3</version>
       </plugin>
 
       <plugin>
