@@ -604,6 +604,64 @@ public class Lista<T> implements Iterable<T> {
      */
     public Lista<T> mergeSort(Comparator<T> comparador) {
         // Aquí va su código.
+        Lista<T> lista = copia();
+
+        if (lista.longitud < 2) {
+            return lista;
+        }
+
+        Lista<T> izq = new Lista<>();
+        Lista<T> der = new Lista<>();
+
+        int mitad = lista.longitud / 2;
+        int elementsCount = 0;
+
+        Nodo nodo = this.cabeza;
+        while (nodo != null) {
+            if (elementsCount < mitad) {
+                izq.agregaFinal(nodo.elemento);
+            } else {
+                der.agregaFinal(nodo.elemento);
+            }
+            elementsCount += 1;
+            nodo = nodo.siguiente;
+        }
+        izq = izq.mergeSort(comparador);
+        der = der.mergeSort(comparador);
+
+        Lista<T> nuevaLista = mezcla(izq, der, comparador);
+
+        return nuevaLista;
+    }
+
+    /*
+     * Método auxiliar que mezcla dos listas ordenadas en una sola.
+     */
+    private Lista<T> mezcla(Lista<T> izq, Lista<T> der, Comparator<T> comparador) {
+        Lista<T> lista = new Lista<>();
+        Nodo nodoIzq = izq.cabeza;
+        Nodo nodoDer = der.cabeza;
+        while (nodoIzq != null && nodoDer != null) {
+            if (comparador.compare(nodoIzq.elemento, nodoDer.elemento) <= 0) {
+                lista.agregaFinal(nodoIzq.elemento);
+                nodoIzq = nodoIzq.siguiente;
+            } else {
+                lista.agregaFinal(nodoDer.elemento);
+                nodoDer = nodoDer.siguiente;
+            }
+        }
+        if (nodoIzq == null) {
+            while (nodoDer != null) {
+                lista.agregaFinal(nodoDer.elemento);
+                nodoDer = nodoDer.siguiente;
+            }
+        } else {
+            while (nodoIzq != null) {
+                lista.agregaFinal(nodoIzq.elemento);
+                nodoIzq = nodoIzq.siguiente;
+            }
+        }
+        return lista;
     }
 
     /**
@@ -630,6 +688,14 @@ public class Lista<T> implements Iterable<T> {
      */
     public boolean busquedaLineal(T elemento, Comparator<T> comparador) {
         // Aquí va su código.
+        Nodo aux = cabeza;
+        while (aux != null) {
+            if (comparador.compare(aux.elemento, elemento) == 0) {
+                return true;
+            }
+            aux = aux.siguiente;
+        }
+        return false;
     }
 
     /**

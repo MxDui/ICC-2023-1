@@ -17,7 +17,8 @@ import org.junit.rules.Timeout;
 public class TestLista {
 
     /** Expiración para que ninguna prueba tarde más de 5 segundos. */
-    @Rule public Timeout expiracion = Timeout.seconds(5);
+    @Rule
+    public Timeout expiracion = Timeout.seconds(5);
 
     /* Generador de números aleatorios. */
     private Random random;
@@ -29,9 +30,9 @@ public class TestLista {
     /* Clase para probar estabilidad de MergeSort. */
     private class Par implements Comparable<Par> {
 
-        /* Valor del par.*/
+        /* Valor del par. */
         private int valor;
-        /* Etiqueta del par.*/
+        /* Etiqueta del par. */
         private int etiqueta;
 
         /* Constructor. */
@@ -51,7 +52,8 @@ public class TestLista {
         }
 
         /* Compara dos pares. */
-        @Override public int compareTo(Par par) {
+        @Override
+        public int compareTo(Par par) {
             return valor - par.valor;
         }
     }
@@ -93,7 +95,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#Lista}.
      */
-    @Test public void testConstructor() {
+    @Test
+    public void testConstructor() {
         Assert.assertTrue(lista != null);
         Assert.assertTrue(lista.esVacia());
         Assert.assertTrue(lista.getLongitud() == 0);
@@ -102,13 +105,14 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#getLongitud}.
      */
-    @Test public void testGetLongitud() {
+    @Test
+    public void testGetLongitud() {
         Assert.assertTrue(lista.getLongitud() == 0);
-        for (int i = 0; i < total/2; i++) {
+        for (int i = 0; i < total / 2; i++) {
             lista.agregaFinal(str(random.nextInt(total)));
             Assert.assertTrue(lista.getLongitud() == i + 1);
         }
-        for (int i = total/2; i < total; i++) {
+        for (int i = total / 2; i < total; i++) {
             lista.agregaInicio(str(random.nextInt(total)));
             Assert.assertTrue(lista.getLongitud() == i + 1);
         }
@@ -118,7 +122,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#esVacia}.
      */
-    @Test public void testEsVacia() {
+    @Test
+    public void testEsVacia() {
         Assert.assertTrue(lista.esVacia());
         lista.agregaFinal(str(random.nextInt(total)));
         Assert.assertFalse(lista.esVacia());
@@ -129,11 +134,13 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#agregaFinal}.
      */
-    @Test public void testAgregaFinal() {
+    @Test
+    public void testAgregaFinal() {
         try {
             lista.agregaFinal(null);
             Assert.fail();
-        } catch (IllegalArgumentException iae) {}
+        } catch (IllegalArgumentException iae) {
+        }
         validaLista(lista);
         lista.agregaFinal("1");
         validaLista(lista);
@@ -152,11 +159,13 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#agregaInicio}.
      */
-    @Test public void testAgregaInicio() {
+    @Test
+    public void testAgregaInicio() {
         try {
             lista.agregaInicio(null);
             Assert.fail();
-        } catch (IllegalArgumentException iae) {}
+        } catch (IllegalArgumentException iae) {
+        }
         validaLista(lista);
         lista.agregaInicio("1");
         validaLista(lista);
@@ -175,11 +184,13 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#inserta}.
      */
-    @Test public void testInserta() {
+    @Test
+    public void testInserta() {
         try {
             lista.inserta(0, null);
             Assert.fail();
-        } catch (IllegalArgumentException iae) {}
+        } catch (IllegalArgumentException iae) {
+        }
         Assert.assertTrue(lista.esVacia());
         validaLista(lista);
         int ini = random.nextInt(total);
@@ -195,7 +206,8 @@ public class TestLista {
             try {
                 lista.inserta(i, null);
                 Assert.fail();
-            } catch (IllegalArgumentException iae) {}
+            } catch (IllegalArgumentException iae) {
+            }
         lista = new Lista<String>();
         otra = new Lista<String>();
         for (int i = 0; i < total; i++) {
@@ -215,7 +227,7 @@ public class TestLista {
             Assert.assertTrue(lista.getUltimo().equals(str(ini + i)));
         }
         for (int i = 0; i < total; i++) {
-            int m = 1 + random.nextInt(total-2);
+            int m = 1 + random.nextInt(total - 2);
             lista = new Lista<String>();
             otra = new Lista<String>();
             for (int j = 0; j < total; j++) {
@@ -235,7 +247,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#elimina}.
      */
-    @Test public void testElimina() {
+    @Test
+    public void testElimina() {
         lista.elimina(null);
         validaLista(lista);
         Assert.assertTrue(lista.esVacia());
@@ -283,11 +296,13 @@ public class TestLista {
         try {
             lista.getPrimero();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         try {
             lista.getUltimo();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         lista.agregaFinal("1");
         lista.agregaFinal("2");
         lista.agregaFinal("3");
@@ -317,11 +332,13 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#eliminaPrimero}.
      */
-    @Test public void testEliminaPrimero() {
+    @Test
+    public void testEliminaPrimero() {
         try {
             lista.eliminaPrimero();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         String[] a = new String[total];
         for (int i = 0; i < total; i++) {
             a[i] = str(random.nextInt(total));
@@ -339,7 +356,8 @@ public class TestLista {
         try {
             lista.eliminaPrimero();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         lista.agregaFinal("1");
         lista.agregaFinal("2");
         lista.agregaFinal("1");
@@ -355,11 +373,13 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#eliminaUltimo}.
      */
-    @Test public void testEliminaUltimo() {
+    @Test
+    public void testEliminaUltimo() {
         try {
             lista.eliminaUltimo();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         String[] a = new String[total];
         for (int i = 0; i < total; i++) {
             a[i] = str(random.nextInt(total));
@@ -377,7 +397,8 @@ public class TestLista {
         try {
             lista.eliminaUltimo();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         lista.agregaFinal("1");
         lista.agregaFinal("2");
         lista.agregaFinal("1");
@@ -393,7 +414,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#contiene}.
      */
-    @Test public void testContiene() {
+    @Test
+    public void testContiene() {
         String r = str(random.nextInt(total));
         Assert.assertFalse(lista.contiene(r));
         int d = random.nextInt(total);
@@ -401,7 +423,7 @@ public class TestLista {
         int n = d - 1;
         for (int i = 0; i < total; i++) {
             lista.agregaFinal(str(d++));
-            if (i == total/2)
+            if (i == total / 2)
                 m = d - 1;
         }
         Assert.assertTrue(lista.contiene(str(m)));
@@ -412,7 +434,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#reversa}.
      */
-    @Test public void testReversa() {
+    @Test
+    public void testReversa() {
         Lista<String> reversa = lista.reversa();
         Assert.assertTrue(reversa.esVacia());
         Assert.assertFalse(reversa == lista);
@@ -434,7 +457,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#copia}.
      */
-    @Test public void testCopia() {
+    @Test
+    public void testCopia() {
         Lista<String> copia = lista.copia();
         Assert.assertTrue(copia.esVacia());
         Assert.assertFalse(copia == lista);
@@ -455,7 +479,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#limpia}.
      */
-    @Test public void testLimpia() {
+    @Test
+    public void testLimpia() {
         String primero = str(random.nextInt(total));
         lista.agregaFinal(primero);
         for (int i = 0; i < total; i++)
@@ -478,21 +503,25 @@ public class TestLista {
         try {
             lista.getPrimero();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         try {
             lista.getUltimo();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
     }
 
     /**
      * Prueba unitaria para {@link Lista#getPrimero}.
      */
-    @Test public void testGetPrimero() {
+    @Test
+    public void testGetPrimero() {
         try {
             lista.getPrimero();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         for (int i = 0; i < total; i++) {
             String r = str(random.nextInt(total));
             lista.agregaInicio(r);
@@ -503,11 +532,13 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#getUltimo}.
      */
-    @Test public void testGetUltimo() {
+    @Test
+    public void testGetUltimo() {
         try {
             lista.getUltimo();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         for (int i = 0; i < total; i++) {
             String r = str(random.nextInt(total));
             lista.agregaFinal(r);
@@ -518,7 +549,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#get}.
      */
-    @Test public void testGet() {
+    @Test
+    public void testGet() {
         String[] a = new String[total];
         for (int i = 0; i < total; i++) {
             a[i] = str(random.nextInt(total));
@@ -529,25 +561,30 @@ public class TestLista {
         try {
             lista.get(-1);
             Assert.fail();
-        } catch (ExcepcionIndiceInvalido eii) {}
+        } catch (ExcepcionIndiceInvalido eii) {
+        }
         try {
             lista.get(-2);
             Assert.fail();
-        } catch (ExcepcionIndiceInvalido eii) {}
+        } catch (ExcepcionIndiceInvalido eii) {
+        }
         try {
             lista.get(total);
             Assert.fail();
-        } catch (ExcepcionIndiceInvalido eii) {}
+        } catch (ExcepcionIndiceInvalido eii) {
+        }
         try {
-            lista.get(total*2);
+            lista.get(total * 2);
             Assert.fail();
-        } catch (ExcepcionIndiceInvalido eii) {}
+        } catch (ExcepcionIndiceInvalido eii) {
+        }
     }
 
     /**
      * Prueba unitaria para {@link Lista#indiceDe}.
      */
-    @Test public void testIndiceDe() {
+    @Test
+    public void testIndiceDe() {
         String r = str(random.nextInt(total));
         Assert.assertTrue(lista.indiceDe(r) == -1);
         int ini = random.nextInt(total);
@@ -556,7 +593,7 @@ public class TestLista {
             a[i] = str(ini + i);
             lista.agregaFinal(a[i]);
         }
-        for (int i = 0; i < total; i ++)
+        for (int i = 0; i < total; i++)
             Assert.assertTrue(i == lista.indiceDe(a[i]));
         Assert.assertTrue(lista.indiceDe(str(ini - 10)) == -1);
     }
@@ -564,7 +601,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#toString}.
      */
-    @Test public void testToString() {
+    @Test
+    public void testToString() {
         Assert.assertTrue(lista.toString().equals("[]"));
         String[] a = new String[total];
         for (int j = 0; j < total; j++) {
@@ -578,9 +616,9 @@ public class TestLista {
                 continue;
             }
             String s = "[";
-            for (int i = 0; i < j-1; i++)
+            for (int i = 0; i < j - 1; i++)
                 s += String.format("%s, ", a[i]);
-            s += String.format("%s]", a[j-1]);
+            s += String.format("%s]", a[j - 1]);
             Assert.assertTrue(s.equals(lista.toString()));
         }
     }
@@ -588,7 +626,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#equals}.
      */
-    @Test public void testEquals() {
+    @Test
+    public void testEquals() {
         Assert.assertFalse(lista.equals(null));
         Lista<String> otra = new Lista<String>();
         Assert.assertTrue(lista.equals(otra));
@@ -610,7 +649,8 @@ public class TestLista {
      * Prueba unitaria para la implementación {@link Iterator#hasNext} a través
      * del método {@link Lista#iterator}.
      */
-    @Test public void testIteradorHasNext() {
+    @Test
+    public void testIteradorHasNext() {
         Iterator<String> iterador = lista.iterator();
         Assert.assertFalse(iterador.hasNext());
         lista.agregaFinal("-1");
@@ -630,12 +670,14 @@ public class TestLista {
      * Prueba unitaria para la implementación {@link Iterator#next} a través del
      * método {@link Lista#iterator}.
      */
-    @Test public void testIteradorNext() {
+    @Test
+    public void testIteradorNext() {
         Iterator<String> iterador = lista.iterator();
         try {
             iterador.next();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(i));
         iterador = lista.iterator();
@@ -644,14 +686,16 @@ public class TestLista {
         try {
             iterador.next();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
     }
 
     /**
      * Prueba unitaria para la implementación {@link IteradorLista#hasPrevious}
      * a través del método {@link Lista#iteradorLista}.
      */
-    @Test public void testIteradorHasPrevious() {
+    @Test
+    public void testIteradorHasPrevious() {
         IteradorLista<String> iterador = lista.iteradorLista();
         Assert.assertFalse(iterador.hasPrevious());
         lista.agregaFinal("-1");
@@ -673,12 +717,14 @@ public class TestLista {
      * Prueba unitaria para la implementación {@link IteradorLista#previous} a
      * través del método {@link Lista#iteradorLista}.
      */
-    @Test public void testIteradorPrevious() {
+    @Test
+    public void testIteradorPrevious() {
         IteradorLista<String> iterador = lista.iteradorLista();
         try {
             iterador.previous();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(i));
         iterador = lista.iteradorLista();
@@ -688,14 +734,16 @@ public class TestLista {
         try {
             iterador.previous();
             Assert.fail();
-        } catch (NoSuchElementException nsee) {}
+        } catch (NoSuchElementException nsee) {
+        }
     }
 
     /**
      * Prueba unitaria para la implementación {@link IteradorLista#start} a
      * través del método {@link Lista#iteradorLista}.
      */
-    @Test public void testIteradorStart() {
+    @Test
+    public void testIteradorStart() {
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(i));
         IteradorLista<String> iterador = lista.iteradorLista();
@@ -712,7 +760,8 @@ public class TestLista {
      * Prueba unitaria para la implementación {@link IteradorLista#end} a través
      * del método {@link Lista#iteradorLista}.
      */
-    @Test public void testIteradorEnd() {
+    @Test
+    public void testIteradorEnd() {
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(i));
         IteradorLista<String> iterador = lista.iteradorLista();
@@ -722,11 +771,11 @@ public class TestLista {
         Assert.assertTrue(iterador.previous().equals(str(total - 1)));
     }
 
-
     /**
      * Prueba unitaria para {@link Lista#mergeSort}.
      */
-    @Test public void testMergeSort() {
+    @Test
+    public void testMergeSort() {
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(random.nextInt(total)));
         Lista<String> ordenada = lista.mergeSort((a, b) -> a.compareTo(b));
@@ -750,12 +799,16 @@ public class TestLista {
             pares.agregaFinal(new Par(v, i));
         }
         pares = Lista.mergeSort(pares);
+        // print list with values not references
+
         Par u = null;
         for (Par par : pares) {
             if (u == null) {
                 u = par;
                 continue;
             }
+            System.out.println(u.toString());
+            System.out.println(par.toString());
             Assert.assertTrue(u.getValor() <= par.getValor());
             if (u.getValor() == par.getValor())
                 Assert.assertTrue(u.getEtiqueta() < par.getEtiqueta());
@@ -766,7 +819,8 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#mergeSort(Lista)}.
      */
-    @Test public void testMergeSortLista() {
+    @Test
+    public void testMergeSortLista() {
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(random.nextInt(total)));
         Lista<String> ordenada = Lista.mergeSort(lista);
@@ -806,11 +860,12 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#busquedaLineal}.
      */
-    @Test public void testBusquedaLineal() {
+    @Test
+    public void testBusquedaLineal() {
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(random.nextInt(total)));
         lista = lista.mergeSort((a, b) -> a.compareTo(b));
-        String m = lista.get(total/2);
+        String m = lista.get(total / 2);
         Assert.assertTrue(lista.busquedaLineal(m, (a, b) -> a.compareTo(b)));
         String o = " ";
         Assert.assertFalse(lista.busquedaLineal(o, (a, b) -> a.compareTo(b)));
@@ -821,11 +876,12 @@ public class TestLista {
     /**
      * Prueba unitaria para {@link Lista#busquedaLineal(Lista,Comparable)}.
      */
-    @Test public void testBusquedaLinealLista() {
+    @Test
+    public void testBusquedaLinealLista() {
         for (int i = 0; i < total; i++)
             lista.agregaFinal(str(random.nextInt(total)));
         lista = Lista.mergeSort(lista);
-        String m = lista.get(total/2);
+        String m = lista.get(total / 2);
         Assert.assertTrue(Lista.busquedaLineal(lista, m));
         String o = " ";
         Assert.assertFalse(Lista.busquedaLineal(lista, o));
