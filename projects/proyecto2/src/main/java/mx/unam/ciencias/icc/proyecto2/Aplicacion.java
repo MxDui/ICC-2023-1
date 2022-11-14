@@ -2,13 +2,11 @@ package mx.unam.ciencias.icc.proyecto2;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.util.Scanner;
 
 public class Aplicacion {
 
@@ -42,154 +40,6 @@ public class Aplicacion {
         }
     }
 
-    public void ordenar() {
-
-    }
-
-    public void ordenar(String archivo) {
-        try {
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
-
-            Lista<Registro> lista = new Lista<Registro>();
-
-            String linea = br.readLine();
-
-            while (linea != null) {
-                lista.agregaFinal(new Registro(linea));
-                linea = br.readLine();
-            }
-
-            br.close();
-
-            lista = lista.mergeSort(
-                    (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
-
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"));
-
-            for (Registro r : lista) {
-                bw.write(r.getLinea());
-                bw.newLine();
-            }
-
-            bw.close();
-
-        } catch (IOException ioe) {
-            System.err.println("Error al leer el archivo.");
-            System.exit(1);
-        }
-    }
-
-    public void ordenar(String archivo, String archivoSalida) {
-
-        try {
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
-
-            Lista<Registro> lista = new Lista<Registro>();
-
-            String linea = br.readLine();
-
-            while (linea != null) {
-                lista.agregaFinal(new Registro(linea));
-                linea = br.readLine();
-            }
-
-            br.close();
-
-            lista = lista.mergeSort(
-                    (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
-
-            BufferedWriter bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(archivoSalida), "UTF-8"));
-
-            for (Registro r : lista) {
-                bw.write(r.getLinea());
-                bw.newLine();
-            }
-
-            bw.close();
-
-        } catch (IOException ioe) {
-            System.err.println("Error al leer el archivo.");
-            System.exit(1);
-        }
-    }
-
-    public void invertirOrden() {
-
-    }
-
-    public void invertirOrden(String archivo) {
-        try {
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
-
-            Lista<Registro> lista = new Lista<Registro>();
-
-            String linea = br.readLine();
-
-            while (linea != null) {
-                lista.agregaFinal(new Registro(linea));
-                linea = br.readLine();
-            }
-
-            br.close();
-
-            lista = lista.mergeSort(
-                    (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
-
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"));
-
-            for (Registro r : lista.reversa()) {
-                bw.write(r.getLinea());
-                bw.newLine();
-            }
-
-            bw.close();
-
-        } catch (IOException ioe) {
-            System.err.println("Error al leer el archivo.");
-            System.exit(1);
-        }
-    }
-
-    public void invertirOrden(String archivo, String archivoSalida) {
-
-        try {
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
-
-            Lista<Registro> lista = new Lista<Registro>();
-
-            String linea = br.readLine();
-
-            while (linea != null) {
-                lista.agregaFinal(new Registro(linea));
-                linea = br.readLine();
-            }
-
-            br.close();
-
-            lista = lista.mergeSort(
-                    (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
-
-            BufferedWriter bw = new BufferedWriter(
-                    new OutputStreamWriter(new FileOutputStream(archivoSalida), "UTF-8"));
-
-            for (Registro r : lista.reversa()) {
-                bw.write(r.getLinea());
-                bw.newLine();
-            }
-
-            bw.close();
-
-        } catch (IOException ioe) {
-            System.err.println("Error al leer el archivo.");
-            System.exit(1);
-        }
-    }
-
     public void analizarArgs(
             String[] args) {
         if (args.length < 1) {
@@ -197,27 +47,27 @@ public class Aplicacion {
         }
         if (args.length == 1) {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                ordenar();
+                Ordenador.ordenar();
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                invertirOrden();
+                Invertidor.invertirOrden();
             } else {
                 throw new IllegalArgumentException("Opcion no valida");
             }
         }
         if (args.length == 2) {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                ordenar(args[1]);
+                Ordenador.ordenar(args[1]);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                invertirOrden(args[1]);
+                Invertidor.invertirOrden(args[1]);
             } else {
                 Proyecto2.uso();
             }
         }
-        if (args.length == 3) {
+        if (args.length < 2) {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                ordenar(args[1], args[2]);
+                Ordenador.ordenar(args[1], args[2]);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                invertirOrden(args[1], args[2]);
+                Invertidor.invertirOrden(args[1], args[2]);
             } else {
                 Proyecto2.uso();
             }
