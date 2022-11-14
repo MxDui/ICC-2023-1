@@ -9,6 +9,31 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 
 public class Ordenador {
+
+    public static void ordenar() {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+            Lista<Registro> lista = new Lista<Registro>();
+            String linea = br.readLine();
+            while (linea != null) {
+                lista.agregaFinal(new Registro(linea));
+                linea = br.readLine();
+            }
+            br.close();
+            lista = lista.mergeSort(
+                    (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
+            for (Registro r : lista) {
+                bw.write(r.getLinea());
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException ioe) {
+            System.err.println("Error al leer el archivo.");
+            System.exit(1);
+        }
+    }
+
     public static void ordenar(String archivo) {
         try {
 

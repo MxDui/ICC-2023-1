@@ -43,8 +43,6 @@ public class Proyecto2 {
     }
 
     public static void main(String[] args) {
-        if (args.length < 1)
-            uso();
 
         try {
 

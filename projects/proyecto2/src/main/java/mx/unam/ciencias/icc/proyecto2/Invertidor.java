@@ -10,6 +10,30 @@ import java.io.OutputStreamWriter;
 
 public class Invertidor {
 
+    public static void invertirOrden() {
+        try {
+            // standar input
+            BufferedReader br = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
+            Lista<Registro> lista = new Lista<Registro>();
+            String linea = br.readLine();
+            while (linea != null) {
+                lista.agregaFinal(new Registro(linea));
+                linea = br.readLine();
+            }
+            br.close();
+            // standar output
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
+            for (Registro r : lista.reversa()) {
+                bw.write(r.getLinea());
+                bw.newLine();
+            }
+            bw.close();
+        } catch (IOException ioe) {
+            System.err.println("Error al leer el archivo.");
+            System.exit(1);
+        }
+    }
+
     public static void invertirOrden(String archivo) {
         try {
 
