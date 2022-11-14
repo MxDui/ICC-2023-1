@@ -75,14 +75,16 @@ public class Ordenador {
             BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(archivoSalida), "UTF-8"));
 
-            // put all the lines in a list
             Lista<Registro> lista = new Lista<Registro>();
             Lista<Registro> orderLista = new Lista<Registro>();
 
             for (String archivo : archivos) {
+
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
+
                 String linea = br.readLine();
+
                 while (linea != null) {
                     lista.agregaFinal(new Registro(linea));
                     linea = br.readLine();
@@ -90,7 +92,11 @@ public class Ordenador {
                 br.close();
             }
 
-            orderLista = lista.mergeSort((a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
+            // sort the list with trimed lines and vowels with accents changed to their non
+            // accent version
+
+            orderLista = lista.mergeSort((a, b) -> a.getLinea().trim().replaceAll("[^a-zA-Z]", "").toLowerCase()
+                    .compareTo(b.getLinea().replaceAll("[^a-zA-Z]", "").toLowerCase()));
 
             for (Registro r : orderLista) {
                 bw.write(r.getLinea());

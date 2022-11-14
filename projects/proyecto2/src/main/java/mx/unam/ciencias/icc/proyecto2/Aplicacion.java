@@ -36,9 +36,14 @@ public class Aplicacion {
 
         String lastArgument = args[args.length - 1];
         String[] argsWithoutLast = new String[args.length - 1];
+        String[] argsWithoutFlag = new String[args.length - 1];
 
         for (int i = 0; i < args.length - 1; i++) {
             argsWithoutLast[i] = args[i];
+        }
+
+        for (int i = 1; i < args.length - 1; i++) {
+            argsWithoutFlag[i] = args[i];
         }
 
         if (args.length == 0) {
@@ -60,9 +65,9 @@ public class Aplicacion {
             }
         } else if (args.length >= 2) {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                Ordenador.ordenar(args[1]);
+                Ordenador.ordenar(argsWithoutFlag, lastArgument);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden(args[1]);
+                Invertidor.invertirOrden(argsWithoutFlag, lastArgument);
             } else {
                 Ordenador.ordenar(argsWithoutLast, lastArgument);
             }
