@@ -74,16 +74,29 @@ public class Ordenador {
         try {
             BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(archivoSalida), "UTF-8"));
+
+            // put all the lines in a list
+            Lista<Registro> lista = new Lista<Registro>();
+            Lista<Registro> orderLista = new Lista<Registro>();
+
             for (String archivo : archivos) {
-                BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
+                BufferedReader br = new BufferedReader(
+                        new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
                 String linea = br.readLine();
                 while (linea != null) {
-                    bw.write(linea);
-                    bw.newLine();
+                    lista.agregaFinal(new Registro(linea));
                     linea = br.readLine();
                 }
                 br.close();
             }
+
+            orderLista = lista.mergeSort((a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
+
+            for (Registro r : orderLista) {
+                bw.write(r.getLinea());
+                bw.newLine();
+            }
+
             bw.close();
         } catch (IOException ioe) {
             System.err.println("Error al leer el archivo.");
