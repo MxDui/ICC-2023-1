@@ -1,13 +1,5 @@
 package mx.unam.ciencias.icc.proyecto2;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-
 public class Aplicacion {
 
     private enum Opcion {
@@ -28,7 +20,6 @@ public class Aplicacion {
     }
 
     public Aplicacion(String[] args) {
-
         try {
             analizarArgs(args);
         } catch (IllegalArgumentException iae) {
@@ -42,36 +33,38 @@ public class Aplicacion {
 
     public void analizarArgs(
             String[] args) {
-        if (args.length < 1) {
+        if (args.length < 0) {
             Proyecto2.uso();
         }
-        if (args.length == 1) {
-            if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                Ordenador.ordenar();
-            } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden();
-            } else {
-                throw new IllegalArgumentException("Opcion no valida");
-            }
+        if (args.length == 0) {
+            // if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
+            // Ordenador.ordenar();
+            // } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
+            // Invertidor.invertirOrden();
+            // } else {
+            // Ordenador.ordenar();
+            // }
         }
-        if (args.length == 2) {
+        if (args.length == 1) {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
                 Ordenador.ordenar(args[1]);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
                 Invertidor.invertirOrden(args[1]);
             } else {
-                Proyecto2.uso();
+                Ordenador.ordenar(args[0]);
             }
-        }
-        if (args.length < 2) {
+        } else if (args.length <= 2) {
             if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                Ordenador.ordenar(args[1], args[2]);
+                Ordenador.ordenar(args[1]);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden(args[1], args[2]);
+                Invertidor.invertirOrden(args[1]);
             } else {
-                Proyecto2.uso();
+                Ordenador.ordenar(args, "prueba.txt");
             }
+        } else {
+            throw new IllegalArgumentException("Opcion no valida.");
         }
+
     }
 
 }
