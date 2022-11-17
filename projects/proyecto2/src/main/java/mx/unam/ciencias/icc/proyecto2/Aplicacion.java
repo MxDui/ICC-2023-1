@@ -35,7 +35,6 @@ public class Aplicacion {
             String[] args) {
 
         if (args.length == 0) {
-            // view if standard input is not empty
             Ordenador.ordenar();
         }
 
@@ -70,7 +69,7 @@ public class Aplicacion {
             if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
                 Ordenador.ordenar(fileArgs, lastArgument);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden(fileArgs, lastArgument);
+                Invertidor.invertirOrden(args[1]);
             } else {
                 Ordenador.ordenar(argsWithoutLast, lastArgument);
             }

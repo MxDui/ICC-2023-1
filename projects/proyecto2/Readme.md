@@ -19,7 +19,7 @@ mvn install
 El paquete puede ser ejecutado con
 
 ```bash
-java -jar proyecto2.jar
+java -jar target/proyecto2.jar
 ```
 
 Igualmente puede ser ejecutado con argumentos para especificar el archivo de entrada y el archivo de salida o el orden de en que se ordenarán las palabras (inverso o normal)
@@ -27,9 +27,9 @@ Igualmente puede ser ejecutado con argumentos para especificar el archivo de ent
 Ejemplo
 
 ```bash
-java -jar proyecto2.jar -o entrada.txt entrada2.txt salida.txt
+java -jar target/proyecto2.jar -o entrada.txt entrada2.txt salida.txt
 ```
 
 ```bash
-java -jar proyecto2.jar -r entrada.txt
+java -jar target/proyecto2.jar -r entrada.txt
 ```
