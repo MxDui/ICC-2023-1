@@ -22,21 +22,14 @@ El paquete puede ser ejecutado con
 java -jar proyecto2.jar
 ```
 
-Donde las opciones son:
+Igualmente puede ser ejecutado con argumentos para especificar el archivo de entrada y el archivo de salida o el orden de en que se ordenarán las palabras (inverso o normal)
 
-- -o: Ordena el archivo o archivos de entrada ascendentemente
-- -r: Ordena el archivo o archivos de entrada descendentemente
-
-Ejemplo:
+Ejemplo
 
 ```bash
-java -jar proyecto2.jar -r archivo1.txt
+java -jar proyecto2.jar -o entrada.txt entrada2.txt salida.txt
 ```
 
 ```bash
-java -jar proyecto2.jar -o archivo1.txt archivo2.txt
-```
-
-```bash
-java -jar proyecto2.jar -o archivo1.txt archivo2.txt archivo3.txt
+java -jar proyecto2.jar -r entrada.txt
 ```
