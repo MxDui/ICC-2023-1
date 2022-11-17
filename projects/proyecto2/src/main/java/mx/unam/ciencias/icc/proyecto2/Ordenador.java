@@ -14,7 +14,10 @@ public class Ordenador {
         Lista<Registro> orderLista;
         Lista<Registro> lista = new Lista<Registro>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-
+            if (!br.ready()) {
+                Proyecto2.uso();
+                return;
+            }
             String linea = br.readLine();
             while (linea != null) {
                 lista.agregaFinal(new Registro(linea));

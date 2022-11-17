@@ -35,6 +35,7 @@ public class Aplicacion {
             String[] args) {
 
         if (args.length == 0) {
+            // view if standard input is not empty
             Ordenador.ordenar();
         }
 

@@ -2,12 +2,24 @@
 
 ## Autor: David Rivera Morales
 
-### Correr el proyecto
+### Descripción
 
-Para correr el proyecto, se debe ejecutar el siguiente comando con sus respectivos argumentos:
+Ordernador lexicográfico de palabras en un archivo de texto que imita el funcionamiento de la función sort de linux.
+
+### Instalación
+
+Para compilar el programa se debe ejecutar
 
 ```bash
-java -jar proyecto2.jar [opciones] [archivos]
+mvn install
+```
+
+### Uso
+
+El paquete puede ser ejecutado con
+
+```bash
+java -jar proyecto2.jar
 ```
 
 Donde las opciones son:
