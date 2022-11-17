@@ -34,7 +34,15 @@ public class Aplicacion {
     public void analizarArgs(
             String[] args) {
 
-        if (args.length > 0) {
+        if (args.length == 0) {
+            Ordenador.ordenar();
+        }
+
+        if (args.length == 1) {
+            Ordenador.ordenar(args[0]);
+        }
+
+        if (args.length >= 2) {
 
             String lastArgument = args[args.length - 1];
             String[] argsWithoutLast = new String[args.length - 1];
@@ -57,38 +65,18 @@ public class Aplicacion {
             for (int i = 0; i < fileArgs.length; i++) {
                 System.out.println(fileArgs[i]);
             }
-            // System.out.println("argsWithoutLast: " + argsWithoutLast.length);
-            // System.out.println("argsWithoutFlag: " + argsWithoutFlag.length);
-            // System.out.println("lastArgument: " + lastArgument);
-            // System.out.println("args: " + args[0]);
 
-            if (args.length == 1) {
-                if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
-                    Ordenador.ordenar(args[1]);
-                } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                    Invertidor.invertirOrden(args[1]);
-                } else {
-                    Ordenador.ordenar(args[0]);
-                }
-            } else if (args.length >= 2) {
-                if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
-                    // error aqui
-                    Ordenador.ordenar(fileArgs, lastArgument);
-
-                } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                    Invertidor.invertirOrden(fileArgs, lastArgument);
-                } else {
-                    Ordenador.ordenar(argsWithoutLast, lastArgument);
-                }
+            if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
+                Ordenador.ordenar(fileArgs, lastArgument);
+            } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
+                Invertidor.invertirOrden(fileArgs, lastArgument);
             } else {
-                throw new IllegalArgumentException("Opcion no valida.");
+                Ordenador.ordenar(argsWithoutLast, lastArgument);
             }
-        }
 
-        if (args.length == 0) {
-
-            Ordenador.ordenar();
-
+        } else {
+            Proyecto2.uso();
+            throw new IllegalArgumentException("Opcion no valida.");
         }
 
     }

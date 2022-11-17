@@ -38,6 +38,7 @@ public class Ordenador {
     }
 
     public static void ordenar(String archivo) {
+
         try {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
