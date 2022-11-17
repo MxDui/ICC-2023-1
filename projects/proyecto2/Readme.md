@@ -22,7 +22,7 @@ El paquete puede ser ejecutado con
 java -jar target/proyecto2.jar
 ```
 
-Igualmente puede ser ejecutado con argumentos para especificar el archivo de entrada y el archivo de salida o el orden de en que se ordenarán las palabras (inverso o normal)
+Igualmente puede ser ejecutado con argumentos y varios archivos para especificar el archivo de entrada y el archivo de salida o el orden de en que se ordenarán las palabras (inverso o normal)
 
 Ejemplo
 
@@ -32,4 +32,8 @@ java -jar target/proyecto2.jar -o entrada.txt entrada2.txt salida.txt
 
 ```bash
 java -jar target/proyecto2.jar -r entrada.txt
+```
+
+```bash
+java -jar target/proyecto2.jar -o entrada.txt salida.txt
 ```
