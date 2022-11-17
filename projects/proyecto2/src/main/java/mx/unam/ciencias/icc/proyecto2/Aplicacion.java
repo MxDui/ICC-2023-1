@@ -39,6 +39,7 @@ public class Aplicacion {
             String lastArgument = args[args.length - 1];
             String[] argsWithoutLast = new String[args.length - 1];
             String[] argsWithoutFlag = new String[args.length - 1];
+            String[] fileArgs = new String[args.length - 2];
 
             for (int i = 0; i < args.length - 1; i++) {
                 argsWithoutLast[i] = args[i];
@@ -47,6 +48,19 @@ public class Aplicacion {
             for (int i = 1; i < args.length - 1; i++) {
                 argsWithoutFlag[i] = args[i];
             }
+
+            for (int i = 1; i < args.length - 1; i++) {
+                System.out.println(args.length - 2);
+                fileArgs[i - 1] = args[i];
+            }
+
+            for (int i = 0; i < fileArgs.length; i++) {
+                System.out.println(fileArgs[i]);
+            }
+            // System.out.println("argsWithoutLast: " + argsWithoutLast.length);
+            // System.out.println("argsWithoutFlag: " + argsWithoutFlag.length);
+            // System.out.println("lastArgument: " + lastArgument);
+            // System.out.println("args: " + args[0]);
 
             if (args.length == 1) {
                 if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
@@ -58,10 +72,11 @@ public class Aplicacion {
                 }
             } else if (args.length >= 2) {
                 if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
-                    System.out.println("Archivo de salida");
-                    Ordenador.ordenar(argsWithoutFlag, lastArgument);
+                    // error aqui
+                    Ordenador.ordenar(fileArgs, lastArgument);
+
                 } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                    Invertidor.invertirOrden(argsWithoutFlag, lastArgument);
+                    Invertidor.invertirOrden(fileArgs, lastArgument);
                 } else {
                     Ordenador.ordenar(argsWithoutLast, lastArgument);
                 }

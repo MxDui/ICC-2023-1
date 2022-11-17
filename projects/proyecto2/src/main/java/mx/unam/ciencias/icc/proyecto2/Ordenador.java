@@ -76,12 +76,12 @@ public class Ordenador {
         try {
             BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(archivoSalida), "UTF-8"));
+            System.out.println("archivos: " + archivos.length);
 
             Lista<Registro> lista = new Lista<Registro>();
             Lista<Registro> orderLista = new Lista<Registro>();
 
             for (String archivo : archivos) {
-
                 BufferedReader br = new BufferedReader(
                         new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
 
