@@ -74,9 +74,6 @@ public class Aplicacion {
                 Ordenador.ordenar(argsWithoutLast, lastArgument);
             }
 
-        } else {
-            Proyecto2.uso();
-            throw new IllegalArgumentException("Opcion no valida.");
         }
 
     }
