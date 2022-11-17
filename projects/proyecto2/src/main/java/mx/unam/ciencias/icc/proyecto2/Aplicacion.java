@@ -4,7 +4,7 @@ public class Aplicacion {
 
     private enum Opcion {
 
-        ORDERNAR("-o"),
+        ARCHIVO_SALIDA("-o"),
         INVERTIR("-r");
 
         private String opcion;
@@ -34,45 +34,45 @@ public class Aplicacion {
     public void analizarArgs(
             String[] args) {
 
-        String lastArgument = args[args.length - 1];
-        String[] argsWithoutLast = new String[args.length - 1];
-        String[] argsWithoutFlag = new String[args.length - 1];
+        if (args.length > 0) {
+            String lastArgument = args[args.length - 1];
+            String[] argsWithoutLast = new String[args.length - 1];
+            String[] argsWithoutFlag = new String[args.length - 1];
 
-        for (int i = 0; i < args.length - 1; i++) {
-            argsWithoutLast[i] = args[i];
-        }
+            for (int i = 0; i < args.length - 1; i++) {
+                argsWithoutLast[i] = args[i];
+            }
 
-        for (int i = 1; i < args.length - 1; i++) {
-            argsWithoutFlag[i] = args[i];
+            for (int i = 1; i < args.length - 1; i++) {
+                argsWithoutFlag[i] = args[i];
+            }
+
+            if (args.length == 1) {
+                if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
+                    Ordenador.ordenar(args[1]);
+                } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
+                    Invertidor.invertirOrden(args[1]);
+                } else {
+
+                    Ordenador.ordenar(args[0]);
+                }
+            } else if (args.length >= 2) {
+                if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
+                    Ordenador.ordenar(argsWithoutFlag, lastArgument);
+                } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
+                    Invertidor.invertirOrden(argsWithoutFlag, lastArgument);
+                } else {
+                    Ordenador.ordenar(argsWithoutLast, lastArgument);
+                }
+            } else {
+                throw new IllegalArgumentException("Opcion no valida.");
+            }
         }
 
         if (args.length == 0) {
-            if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                Ordenador.ordenar();
-            } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden();
-            } else {
-                Ordenador.ordenar();
-            }
-        }
-        if (args.length == 1) {
-            if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                Ordenador.ordenar(args[1]);
-            } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden(args[1]);
-            } else {
-                Ordenador.ordenar(args[0]);
-            }
-        } else if (args.length >= 2) {
-            if (args[0].equals(Opcion.ORDERNAR.getOpcion())) {
-                Ordenador.ordenar(argsWithoutFlag, lastArgument);
-            } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden(argsWithoutFlag, lastArgument);
-            } else {
-                Ordenador.ordenar(argsWithoutLast, lastArgument);
-            }
-        } else {
-            throw new IllegalArgumentException("Opcion no valida.");
+
+            Ordenador.ordenar();
+
         }
 
     }

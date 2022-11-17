@@ -52,6 +52,7 @@ public class Proyecto2 {
             System.err.println(iae.getMessage());
             System.exit(ERROR_USO);
         } catch (Exception e) {
+            System.err.println(e.getMessage());
             System.err.println("Error inesperado.");
             System.exit(ERROR_USO);
         }

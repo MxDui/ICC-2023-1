@@ -11,25 +11,14 @@ import java.io.OutputStreamWriter;
 public class Ordenador {
 
     public static void ordenar() {
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(System.in, "UTF-8"));
-            Lista<Registro> lista = new Lista<Registro>();
-            String linea = br.readLine();
-            while (linea != null) {
-                lista.agregaFinal(new Registro(linea));
-                linea = br.readLine();
+        System.out.println("Ordenando...");
+        String line;
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
             }
-            br.close();
-            lista = lista.mergeSort(
-                    (a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
-            for (Registro r : lista) {
-                bw.write(r.getLinea());
-                bw.newLine();
-            }
-            bw.close();
         } catch (IOException ioe) {
-            System.err.println("Error al leer el archivo.");
+            System.err.println("Error al leer de la entrada estándar.");
             System.exit(1);
         }
     }
@@ -91,9 +80,6 @@ public class Ordenador {
                 }
                 br.close();
             }
-
-            // sort the list with trimed lines and vowels with accents changed to their non
-            // accent version
 
             orderLista = lista.mergeSort((a, b) -> a.getLinea().trim().replaceAll("[^a-zA-Z]", "").toLowerCase()
                     .compareTo(b.getLinea().replaceAll("[^a-zA-Z]", "").toLowerCase()));
