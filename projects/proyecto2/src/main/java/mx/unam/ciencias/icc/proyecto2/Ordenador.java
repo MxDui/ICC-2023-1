@@ -11,15 +11,27 @@ import java.io.OutputStreamWriter;
 public class Ordenador {
 
     public static void ordenar() {
-        System.out.println("Ordenando...");
-        String line;
+        Lista<Registro> orderLista;
+        Lista<Registro> lista = new Lista<Registro>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
+            String linea = br.readLine();
+            while (linea != null) {
+                lista.agregaFinal(new Registro(linea));
+                linea = br.readLine();
             }
+            br.close();
+
+            orderLista = lista.mergeSort((a, b) -> a.getLinea().trim().replaceAll("[^a-zA-Z]", "").toLowerCase()
+                    .compareTo(b.getLinea().replaceAll("[^a-zA-Z]", "").toLowerCase()));
+
+            for (Registro r : orderLista) {
+                System.out.println(r.getLinea());
+            }
+
         } catch (IOException ioe) {
-            System.err.println("Error al leer de la entrada estándar.");
+            System.err.println("Error al leer del archivo.");
             System.exit(1);
+
         }
     }
 
@@ -41,7 +53,8 @@ public class Ordenador {
 
             br.close();
 
-            orderLista = lista.mergeSort((a, b) -> a.getLinea().codePointAt(0) - b.getLinea().codePointAt(0));
+            orderLista = lista.mergeSort((a, b) -> a.getLinea().trim().replaceAll("[^a-zA-Z]", "").toLowerCase()
+                    .compareTo(b.getLinea().replaceAll("[^a-zA-Z]", "").toLowerCase()));
 
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"));
 

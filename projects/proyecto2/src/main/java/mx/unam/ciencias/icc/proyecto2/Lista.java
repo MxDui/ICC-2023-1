@@ -589,21 +589,26 @@ public class Lista<T> implements Coleccion<T> {
 
         int half = this.getLongitud() / 2;
         int elementsCount = 0;
-
         Nodo nodo = this.cabeza;
-        while (nodo != null) {
-            if (elementsCount < half) {
-                leftHalf.agrega(nodo.elemento);
-            } else {
-                rigthHalf.agrega(nodo.elemento);
+
+        try {
+
+            while (nodo != null) {
+                if (elementsCount < half) {
+                    leftHalf.agrega(nodo.elemento);
+                } else {
+                    rigthHalf.agrega(nodo.elemento);
+                }
+                elementsCount += 1;
+                nodo = nodo.siguiente;
             }
-            elementsCount += 1;
-            nodo = nodo.siguiente;
+
+            leftHalf = leftHalf.mergeSort(comparador);
+            rigthHalf = rigthHalf.mergeSort(comparador);
+
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
         }
-
-        leftHalf = leftHalf.mergeSort(comparador);
-        rigthHalf = rigthHalf.mergeSort(comparador);
-
         Lista<T> newList = MSMerge(leftHalf, rigthHalf, comparador);
         return newList;
     }
