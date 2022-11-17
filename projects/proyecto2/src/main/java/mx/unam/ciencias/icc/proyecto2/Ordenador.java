@@ -14,6 +14,7 @@ public class Ordenador {
         Lista<Registro> orderLista;
         Lista<Registro> lista = new Lista<Registro>();
         try (BufferedReader br = new BufferedReader(new InputStreamReader(System.in))) {
+
             String linea = br.readLine();
             while (linea != null) {
                 lista.agregaFinal(new Registro(linea));
@@ -29,6 +30,7 @@ public class Ordenador {
             }
 
         } catch (IOException ioe) {
+            Proyecto2.uso();
             System.err.println("Error al leer del archivo.");
             System.exit(1);
 
@@ -39,9 +41,7 @@ public class Ordenador {
         try {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
-
             Lista<Registro> lista = new Lista<Registro>();
-
             Lista<Registro> orderLista = new Lista<Registro>();
 
             String linea = br.readLine();

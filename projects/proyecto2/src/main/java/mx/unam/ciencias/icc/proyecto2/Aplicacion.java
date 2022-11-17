@@ -35,6 +35,7 @@ public class Aplicacion {
             String[] args) {
 
         if (args.length > 0) {
+
             String lastArgument = args[args.length - 1];
             String[] argsWithoutLast = new String[args.length - 1];
             String[] argsWithoutFlag = new String[args.length - 1];
@@ -53,11 +54,11 @@ public class Aplicacion {
                 } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
                     Invertidor.invertirOrden(args[1]);
                 } else {
-
                     Ordenador.ordenar(args[0]);
                 }
             } else if (args.length >= 2) {
                 if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
+                    System.out.println("Archivo de salida");
                     Ordenador.ordenar(argsWithoutFlag, lastArgument);
                 } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
                     Invertidor.invertirOrden(argsWithoutFlag, lastArgument);
