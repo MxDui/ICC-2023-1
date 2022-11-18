@@ -30,6 +30,7 @@ public class Invertidor {
             orderLista = lista.mergeSort((a, b) -> a.getLinea().trim().replaceAll("[^a-zA-Z]", "").toLowerCase()
                     .compareTo(b.getLinea().replaceAll("[^a-zA-Z]", "").toLowerCase()));
 
+            // write to the same file
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"));
 
             for (Registro r : orderLista.reversa()) {

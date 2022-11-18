@@ -41,13 +41,11 @@ public class Ordenador {
     }
 
     public static void ordenar(String archivo) {
-
         try {
 
             BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(archivo), "UTF-8"));
             Lista<Registro> lista = new Lista<Registro>();
             Lista<Registro> orderLista = new Lista<Registro>();
-
             String linea = br.readLine();
 
             while (linea != null) {
@@ -60,7 +58,8 @@ public class Ordenador {
             orderLista = lista.mergeSort((a, b) -> a.getLinea().trim().replaceAll("[^a-zA-Z]", "").toLowerCase()
                     .compareTo(b.getLinea().replaceAll("[^a-zA-Z]", "").toLowerCase()));
 
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"));
+            BufferedWriter bw = new BufferedWriter(
+                    new OutputStreamWriter(new FileOutputStream(archivo), "UTF-8"));
 
             for (Registro r : orderLista) {
                 bw.write(r.getLinea());
@@ -78,9 +77,9 @@ public class Ordenador {
 
     public static void ordenar(String[] archivos, String archivoSalida) {
         try {
+
             BufferedWriter bw = new BufferedWriter(
                     new OutputStreamWriter(new FileOutputStream(archivoSalida), "UTF-8"));
-            System.out.println("archivos: " + archivos.length);
 
             Lista<Registro> lista = new Lista<Registro>();
             Lista<Registro> orderLista = new Lista<Registro>();

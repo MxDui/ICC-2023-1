@@ -35,9 +35,9 @@ public class Proyecto2 {
         System.out.print("\n \n");
         System.out.println("Uso: java -jar proyecto2.jar [opciones]");
         System.out.println("Opciones: ");
-        System.out.println("  -r [archivo], Ordena de forma inversa el archivo.");
-        System.out.println("  -o [archivo] , Ordena el archivo.");
-        System.out.println("  -o [archivo] [archivo salida], Exporta el archivo ordenado a un archivo de salida.");
+        System.out.println("  -r <archivo>, Ordena de forma inversa el archivo.");
+        System.out.println(
+                "  -o <archivos de entrada separados por espacios> <archivo de salida> Ordena los archivos de entrada y los guarda en un archivo de salida.");
 
         System.exit(ERROR_USO);
     }

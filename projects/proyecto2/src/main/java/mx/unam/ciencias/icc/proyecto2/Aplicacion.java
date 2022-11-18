@@ -42,7 +42,17 @@ public class Aplicacion {
             Ordenador.ordenar(args[0]);
         }
 
-        if (args.length >= 2) {
+        if (args.length == 2) {
+            if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
+                Ordenador.ordenar(args[1]);
+            } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
+                Invertidor.invertirOrden(args[1]);
+            } else {
+                throw new IllegalArgumentException("Opción inválida.");
+            }
+        }
+
+        if (args.length > 2) {
 
             String lastArgument = args[args.length - 1];
             String[] argsWithoutLast = new String[args.length - 1];
@@ -58,18 +68,13 @@ public class Aplicacion {
             }
 
             for (int i = 1; i < args.length - 1; i++) {
-                System.out.println(args.length - 2);
                 fileArgs[i - 1] = args[i];
-            }
-
-            for (int i = 0; i < fileArgs.length; i++) {
-                System.out.println(fileArgs[i]);
             }
 
             if (args[0].equals(Opcion.ARCHIVO_SALIDA.getOpcion())) {
                 Ordenador.ordenar(fileArgs, lastArgument);
             } else if (args[0].equals(Opcion.INVERTIR.getOpcion())) {
-                Invertidor.invertirOrden(args[1]);
+                Invertidor.invertirOrden(fileArgs, lastArgument);
             } else {
                 Ordenador.ordenar(argsWithoutLast, lastArgument);
             }
