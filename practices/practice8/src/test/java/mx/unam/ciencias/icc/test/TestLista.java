@@ -799,16 +799,12 @@ public class TestLista {
             pares.agregaFinal(new Par(v, i));
         }
         pares = Lista.mergeSort(pares);
-        // print list with values not references
-
         Par u = null;
         for (Par par : pares) {
             if (u == null) {
                 u = par;
                 continue;
             }
-            System.out.println(u.toString());
-            System.out.println(par.toString());
             Assert.assertTrue(u.getValor() <= par.getValor());
             if (u.getValor() == par.getValor())
                 Assert.assertTrue(u.getEtiqueta() < par.getEtiqueta());

@@ -13,6 +13,9 @@ import java.io.IOException;
  * Las clases que extiendan a BaseDeDatos deben implementar el método {@link
  * #creaRegistro}, que crea un registro genérico en blanco.
  *
+ * Las modificaciones a la base de datos son notificadas a los escuchas {@link
+ * EscuchaBaseDeDatos}.
+ *
  * @param <R> El tipo de los registros, que deben implementar la interfaz {@link
  *            Registro}.
  * @param <C> El tipo de los campos de los registros, que debe ser una
@@ -22,6 +25,8 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
 
     /* Lista de registros en la base de datos. */
     private Lista<R> registros;
+    /* Lista de escuchas de la base de datos. */
+    private Lista<EscuchaBaseDeDatos<R>> escuchas;
 
     /**
      * Constructor único.
@@ -29,7 +34,7 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
     public BaseDeDatos() {
         // Aquí va su código.
         registros = new Lista<R>();
-
+        escuchas = new Lista<EscuchaBaseDeDatos<R>>();
     }
 
     /**
@@ -141,13 +146,12 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
                 while (linea != null) {
                     String[] campos = linea.split("\t");
                     R r = creaRegistro();
-
                     if (campos.length == 4) {
                         r.deseria(linea);
+                        registros.agregaFinal(r);
                     } else {
                         break;
                     }
-                    registros.agregaFinal(r);
 
                     linea = in.readLine();
                 }
@@ -194,6 +198,7 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
      */
     public void agregaEscucha(EscuchaBaseDeDatos<R> escucha) {
         // Aquí va su código.
+        escuchas.agregaFinal(escucha);
     }
 
     /**
@@ -203,5 +208,6 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
      */
     public void eliminaEscucha(EscuchaBaseDeDatos<R> escucha) {
         // Aquí va su código.
+        escuchas.elimina(escucha);
     }
 }

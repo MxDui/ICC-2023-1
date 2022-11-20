@@ -392,7 +392,6 @@ public class TestEstudiante {
 
         try {
             estudiante.deseria(linea);
-            System.out.println(estudiante);
 
         } catch (ExcepcionLineaInvalida eli) {
             Assert.fail();

@@ -232,7 +232,8 @@ public class Estudiante implements Registro<Estudiante, CampoEstudiante> {
             nombre.set(campos[0]);
             cuenta.set(Integer.parseInt(campos[1]));
             promedio.set(Double.parseDouble(campos[2]));
-            edad.set(Integer.parseInt(campos[3]));
+            edad.set(Integer.parseInt(campos[3].replace(
+                    "\n", "").replace("\r", "")));
         } catch (ExcepcionLineaInvalida | NumberFormatException e) {
             throw new ExcepcionLineaInvalida("Uno de los campos no es valido");
         }
@@ -288,34 +289,33 @@ public class Estudiante implements Registro<Estudiante, CampoEstudiante> {
         // Aquí va su código.
         if (campo == null)
             throw new IllegalArgumentException("El campo no puede ser null");
+
+        if (valor == null)
+            return false;
         switch (campo) {
             case NOMBRE:
-                if (valor instanceof String)
+                if (!(valor instanceof String)) {
+                    return false;
+                } else if (valor.equals("")) {
+                    return false;
+                } else {
                     return getNombre().contains((String) valor);
-
-                return nombre.get().contains((String) valor);
-            case CUENTA:
-                if (valor instanceof Integer)
-                    return getCuenta() <= (Integer) valor;
-
-                return cuenta.get() <= (Integer) valor;
-
-            case PROMEDIO:
-                if (!(valor instanceof Double)) {
-                    return false;
-                } else if (getPromedio() <= (Double) valor) {
-                    return false;
                 }
-
-                return promedio.get() <= (Double) valor;
-            case EDAD:
+            case CUENTA:
                 if (!(valor instanceof Integer)) {
                     return false;
-                } else if (getEdad() <= (Integer) valor) {
+                } else if ((Integer) valor < 0) {
                     return false;
                 }
-
-                return edad.get() <= (Integer) valor;
+                return getCuenta() >= (Integer) valor;
+            case PROMEDIO:
+                if (!(valor instanceof Double))
+                    return false;
+                return getPromedio() >= (Double) valor;
+            case EDAD:
+                if (!(valor instanceof Integer))
+                    return false;
+                return getEdad() >= (Integer) valor;
             default:
                 return false;
         }
