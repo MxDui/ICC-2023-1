@@ -33,8 +33,8 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
      */
     public BaseDeDatos() {
         // Aquí va su código.
-        registros = new Lista<R>();
-        escuchas = new Lista<EscuchaBaseDeDatos<R>>();
+        registros = new Lista<>();
+        escuchas = new Lista<>();
     }
 
     /**
@@ -45,7 +45,6 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
     public int getNumRegistros() {
         // Aquí va su código.
         return registros.getLongitud();
-
     }
 
     /**
@@ -60,23 +59,40 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
     }
 
     /**
-     * Agrega el registro recibido a la base de datos.
+     * Agrega el registro recibido a la base de datos. Los escuchas son
+     * notificados con {@link EscuchaBaseDeDatos#baseDeDatosModificada} con el
+     * evento {@link EventoBaseDeDatos#REGISTRO_AGREGADO}.
      * 
      * @param registro el registro que hay que agregar a la base de datos.
      */
     public void agregaRegistro(R registro) {
         // Aquí va su código.
+
+        // agregar el registro
         registros.agregaFinal(registro);
+
+        // notificar a los escuchas
+        for (EscuchaBaseDeDatos<R> escucha : escuchas) {
+            escucha.baseDeDatosModificada(EventoBaseDeDatos.REGISTRO_AGREGADO, registro, null);
+        }
+
     }
 
     /**
-     * Elimina el registro recibido de la base de datos.
+     * Elimina el registro recibido de la base de datos. Los escuchas son
+     * notificados con {@link EscuchaBaseDeDatos#baseDeDatosModificada} con el
+     * evento {@link EventoBaseDeDatos#REGISTRO_ELIMINADO}.
      * 
      * @param registro el registro que hay que eliminar de la base de datos.
      */
     public void eliminaRegistro(R registro) {
         // Aquí va su código.
         registros.elimina(registro);
+
+        // notificar a los escuchas
+        for (EscuchaBaseDeDatos<R> escucha : escuchas) {
+            escucha.baseDeDatosModificada(EventoBaseDeDatos.REGISTRO_ELIMINADO, registro, null);
+        }
     }
 
     /**
@@ -97,19 +113,36 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
         // Aquí va su código.
         if (registro1 == null || registro2 == null)
             throw new IllegalArgumentException("Registro nulo");
-        int i = registros.indiceDe(registro1);
-        if (i == -1)
-            return;
-        R r = registros.get(i);
-
+        if (registros.contiene(registro1)) {
+            // buscar el registro en la lista
+            for (R r : registros) {
+                if (r.equals(registro1)) {
+                    // notificar a los escuchas
+                    for (EscuchaBaseDeDatos<R> escucha : escuchas) {
+                        escucha.baseDeDatosModificada(EventoBaseDeDatos.REGISTRO_MODIFICADO, r, registro2);
+                    }
+                    // modificar el registro
+                    r.actualiza(registro2);
+                    break;
+                }
+            }
+        }
     }
 
     /**
-     * Limpia la base de datos.
+     * Limpia la base de datos. Los escuchas son notificados con {@link
+     * EscuchaBaseDeDatos#baseDeDatosModificada} con el evento {@link
+     * EventoBaseDeDatos#BASE_LIMPIADA}
      */
     public void limpia() {
         // Aquí va su código.
         registros.limpia();
+
+        // notificar a los escuchas
+        for (EscuchaBaseDeDatos<R> escucha : escuchas) {
+            escucha.baseDeDatosModificada(EventoBaseDeDatos.BASE_LIMPIADA, null, null);
+        }
+
     }
 
     /**
@@ -132,7 +165,11 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
     /**
      * Carga los registros de la entrada recibida en la base de datos. Si antes
      * de llamar el método había registros en la base de datos, estos son
-     * eliminados.
+     * eliminados. Los escuchas son notificados con {@link
+     * EscuchaBaseDeDatos#baseDeDatosModificada} con el evento {@link
+     * EventoBaseDeDatos#BASE_LIMPIADA}, y por cada registro cargado con {@link
+     * EscuchaBaseDeDatos#baseDeDatosModificada} con el evento {@link
+     * EventoBaseDeDatos#REGISTRO_AGREGADO}.
      * 
      * @param in la entrada de donde hay que cargar los registos.
      * @throws IOException si ocurre un error de entrada/salida.
@@ -140,20 +177,31 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
     public void carga(BufferedReader in) throws IOException {
         // Aquí va su código.
         registros.limpia();
+
+        // notificar a los escuchas
+        for (EscuchaBaseDeDatos<R> escucha : escuchas) {
+            escucha.baseDeDatosModificada(EventoBaseDeDatos.BASE_LIMPIADA, null, null);
+        }
         String linea = in.readLine();
         try {
             try {
                 while (linea != null) {
                     String[] campos = linea.split("\t");
                     R r = creaRegistro();
+
                     if (campos.length == 4) {
                         r.deseria(linea);
-                        registros.agregaFinal(r);
                     } else {
                         break;
                     }
+                    registros.agregaFinal(r);
 
                     linea = in.readLine();
+                }
+                for (R r : registros) {
+                    for (EscuchaBaseDeDatos<R> escucha : escuchas) {
+                        escucha.baseDeDatosModificada(EventoBaseDeDatos.REGISTRO_AGREGADO, r, null);
+                    }
                 }
             } catch (IOException e) {
                 throw new IOException("Error de lectura");
@@ -198,7 +246,10 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
      */
     public void agregaEscucha(EscuchaBaseDeDatos<R> escucha) {
         // Aquí va su código.
+
+        // escucha al que se le notificará
         escuchas.agregaFinal(escucha);
+
     }
 
     /**

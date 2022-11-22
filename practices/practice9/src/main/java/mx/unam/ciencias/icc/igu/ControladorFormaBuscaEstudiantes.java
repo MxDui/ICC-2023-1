@@ -30,20 +30,20 @@ public class ControladorFormaBuscaEstudiantes
     @FXML
     private void revisaValor(ActionEvent evento) {
         // Aquí va su código.
-        
+
     }
 
     /* Manejador para cuando se activa el botón aceptar. */
     @FXML
     private void aceptar(ActionEvent evento) {
         // Aquí va su código.
-        
+
     }
 
     /* Verifica el valor. */
     private boolean verificaValor(String valor) {
         // Aquí va su código.
-        
+
     }
 
     /* Obtiene la pista. */
