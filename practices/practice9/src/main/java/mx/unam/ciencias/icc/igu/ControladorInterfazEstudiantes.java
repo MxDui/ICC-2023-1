@@ -1,5 +1,6 @@
 package mx.unam.ciencias.icc.igu;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -38,6 +39,7 @@ import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
 import mx.unam.ciencias.icc.Estudiante;
 import mx.unam.ciencias.icc.EventoBaseDeDatos;
 import mx.unam.ciencias.icc.Lista;
+import mx.unam.ciencias.icc.Registro;
 
 /**
  * Clase para el controlador de la ventana principal de la aplicación.
@@ -144,12 +146,29 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
+        if (tabla.getSelectionModel().getSelectedItems().size() == 0)
+            return;
+        Alert alert = new Alert(AlertType.CONFIRMATION);
+        alert.setTitle("Confirmación");
+        alert.setHeaderText("¿Estás seguro de que quieres eliminar los estudiantes seleccionados?");
+        alert.setContentText("No podrás recuperarlos.");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.get() == ButtonType.OK) {
+            for (Estudiante e : tabla.getSelectionModel().getSelectedItems())
+                bdd.eliminaRegistro(e);
+        } else {
+            return;
+        }
+
     }
 
     /* Busca estudiantes. */
     @FXML
     private void buscaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
+
+        // search student
+
     }
 
     /* Muestra un diálogo con información del programa. */
@@ -170,6 +189,17 @@ public class ControladorInterfazEstudiantes {
     /* Carga la base de datos de un archivo. */
     private void cargaBaseDeDatosDeArchivo(File archivo) {
         // Aquí va su código.
+        bdd = new BaseDeDatosEstudiantes();
+
+        BufferedReader br = null;
+
+        try {
+
+            br.close();
+        } catch (IOException ioe) {
+            System.out.println("Error al leer el archivo");
+        }
+
     }
 
     /* Guarda la base de datos en un archivo. */

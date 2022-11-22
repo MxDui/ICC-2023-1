@@ -27,6 +27,7 @@ public class DialogoBuscaEstudiantes extends Stage {
      */
     public DialogoBuscaEstudiantes(Stage escenario) throws IOException {
         // Aquí va su código.
+        super();
     }
 
     /**
@@ -36,6 +37,7 @@ public class DialogoBuscaEstudiantes extends Stage {
      */
     public boolean isAceptado() {
         // Aquí va su código.
+        return false;
     }
 
     /**
@@ -44,6 +46,7 @@ public class DialogoBuscaEstudiantes extends Stage {
      */
     public CampoEstudiante getCampo() {
         // Aquí va su código.
+        return null;
     }
 
     /**
@@ -52,5 +55,6 @@ public class DialogoBuscaEstudiantes extends Stage {
      */
     public Object getValor() {
         // Aquí va su código.
+        return null;
     }
 }
