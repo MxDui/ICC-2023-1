@@ -223,9 +223,14 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void acercaDe(ActionEvent evento) {
         // Aquí va su código.
-        Alert alerta = new Alert(AlertType.INFORMATION);
-        alerta.setTitle("Acerca de");
-        alerta.setHeaderText("Base de Datos de Estudiantes");
+        Alert dialogo = new Alert(AlertType.INFORMATION);
+        dialogo.initOwner(escenario);
+        dialogo.initModality(Modality.WINDOW_MODAL);
+        dialogo.setTitle("Administrador de Estudiantes.");
+        dialogo.setHeaderText(null);
+        dialogo.setContentText("Aplicación para administrar estudiantes.\n" +
+                "Copyright © 2022 Facultad de Ciencias, UNAM.");
+        dialogo.showAndWait();
 
     }
 

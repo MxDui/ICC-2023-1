@@ -30,6 +30,17 @@ public class DialogoEditaEstudiante extends Stage {
     public DialogoEditaEstudiante(Stage escenario,
             Estudiante estudiante) throws IOException {
         // Aquí va su código.
+        try {
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(EDITA_ESTUDIANTE_FXML));
+            AnchorPane root = loader.load();
+            controlador = loader.getController();
+            controlador.setEstudiante(estudiante);
+            Scene scene = new Scene(root);
+            setScene(scene);
+        } catch (IOException ioe) {
+            throw new IOException();
+        }
     }
 
     /**
@@ -40,6 +51,7 @@ public class DialogoEditaEstudiante extends Stage {
      */
     public boolean isAceptado() {
         // Aquí va su código.
+        return controlador.isAceptado();
     }
 
     /**
@@ -49,5 +61,6 @@ public class DialogoEditaEstudiante extends Stage {
      */
     public Estudiante getEstudiante() {
         // Aquí va su código.
+        return controlador.getEstudiante();
     }
 }
