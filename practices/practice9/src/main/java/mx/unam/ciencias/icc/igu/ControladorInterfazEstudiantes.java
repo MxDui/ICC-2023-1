@@ -208,6 +208,7 @@ public class ControladorInterfazEstudiantes {
     private void buscaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
         try {
+            System.out.println("Buscando estudiantes...");
 
             DialogoBuscaEstudiantes dialogo = new DialogoBuscaEstudiantes(escenario);
 

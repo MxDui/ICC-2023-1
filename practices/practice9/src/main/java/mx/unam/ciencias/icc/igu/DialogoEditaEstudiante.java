@@ -31,13 +31,14 @@ public class DialogoEditaEstudiante extends Stage {
             Estudiante estudiante) throws IOException {
         // Aquí va su código.
         try {
-            escenario.initModality(Modality.APPLICATION_MODAL);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(EDITA_ESTUDIANTE_FXML));
-            AnchorPane root = loader.load();
-            controlador = loader.getController();
+            ClassLoader cl = getClass().getClassLoader();
+            FXMLLoader cargador = new FXMLLoader(cl.getResource(EDITA_ESTUDIANTE_FXML));
+            AnchorPane root = cargador.load();
+            controlador = cargador.getController();
             controlador.setEstudiante(estudiante);
             Scene scene = new Scene(root);
             setScene(scene);
+
         } catch (IOException ioe) {
             throw new IOException();
         }

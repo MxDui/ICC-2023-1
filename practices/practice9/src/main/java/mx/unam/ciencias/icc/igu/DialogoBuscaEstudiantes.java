@@ -28,12 +28,15 @@ public class DialogoBuscaEstudiantes extends Stage {
     public DialogoBuscaEstudiantes(Stage escenario) throws IOException {
         // Aquí va su código.
         try {
-            escenario.initModality(Modality.APPLICATION_MODAL);
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(BUSCA_ESTUDIANTES_FXML));
-            AnchorPane root = loader.load();
-            controlador = loader.getController();
+            ClassLoader cl = getClass().getClassLoader();
+            FXMLLoader cargador = new FXMLLoader(cl.getResource(BUSCA_ESTUDIANTES_FXML));
+            AnchorPane root = cargador.load();
+            controlador = cargador.getController();
             Scene scene = new Scene(root);
             setScene(scene);
+            initModality(Modality.APPLICATION_MODAL);
+            initOwner(escenario);
+
         } catch (IOException ioe) {
             throw new IOException();
         }
