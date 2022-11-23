@@ -88,6 +88,10 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void initialize() {
         // Aquí va su código.
+        tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+        renglones = tabla.getItems();
+        modeloSeleccion = tabla.getSelectionModel();
+        seleccion = modeloSeleccion.getSelectedCells();
 
         setModificada(false);
         setBaseDeDatos(new BaseDeDatosEstudiantes());
@@ -149,6 +153,7 @@ public class ControladorInterfazEstudiantes {
             return;
         }
         setBaseDeDatos(nbdd);
+
         this.archivo = null;
         setModificada(false);
     }
@@ -194,6 +199,14 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void editaEstudiante(ActionEvent evento) {
         // Aquí va su código.
+
+        DialogoEditaEstudiante dialogo;
+        try {
+            dialogo = new DialogoEditaEstudiante(escenario, null);
+            dialogo.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /* Elimina uno o varios estudiantes. */
@@ -208,7 +221,6 @@ public class ControladorInterfazEstudiantes {
     private void buscaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
         try {
-            System.out.println("Buscando estudiantes...");
 
             DialogoBuscaEstudiantes dialogo = new DialogoBuscaEstudiantes(escenario);
 
@@ -254,6 +266,7 @@ public class ControladorInterfazEstudiantes {
                     new InputStreamReader(
                             new FileInputStream(archivo)));
             nbdd.carga(in);
+
             in.close();
         } catch (IOException ioe) {
             String mensaje = String.format("Ocurrió un error al tratar de " +
@@ -263,6 +276,11 @@ public class ControladorInterfazEstudiantes {
             return;
         }
         setBaseDeDatos(nbdd);
+        // update table
+        for (Estudiante e : nbdd.getRegistros()) {
+            tabla.getItems().add(e);
+        }
+
         this.archivo = archivo;
         setModificada(false);
 
