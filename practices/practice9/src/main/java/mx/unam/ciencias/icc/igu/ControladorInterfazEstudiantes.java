@@ -170,6 +170,23 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void agregaEstudiante(ActionEvent evento) {
         // Aquí va su código
+        try {
+            FXMLLoader cargador = new FXMLLoader(
+                    getClass().getResource("forma-edita-estudiante.fxml"));
+            AnchorPane panel = (AnchorPane) cargador.load();
+            ControladorFormaEstudiante controlador = cargador.<ControladorFormaEstudiante>getController();
+            controlador.setEscenario(escenario);
+
+            Scene escena = new Scene(panel);
+            Stage escenario = new Stage();
+            escenario.setScene(escena);
+            escenario.initModality(Modality.APPLICATION_MODAL);
+            escenario.showAndWait();
+        } catch (IOException ioe) {
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "cargar la ventana de agregar estudiante.");
+            dialogoError("Error al cargar ventana", mensaje);
+        }
 
     }
 
@@ -194,19 +211,8 @@ public class ControladorInterfazEstudiantes {
 
             DialogoBuscaEstudiantes dialogo = new DialogoBuscaEstudiantes(escenario);
 
-            setEscenario(dialogo);
+            dialogo.showAndWait();
 
-            // escenario.setOnShown(w -> controlador.defineFoco());
-            // escenario.setResizable(false);
-            // escenario.showAndWait();
-            // controladorTablaEstudiantes.enfocaTabla();
-            // if (!controlador.isAceptado())
-            // return;
-
-            // Lista<Estudiante> resultados = bdd.buscaRegistros(controlador.getCampo(),
-            // controlador.getValor());
-
-            // controladorTablaEstudiantes.seleccionaRenglones(resultados);
         } catch (IOException ioe) {
 
         }
@@ -297,13 +303,13 @@ public class ControladorInterfazEstudiantes {
     /* Actualiza la interfaz con una nueva base de datos. */
     private void setBaseDeDatos(BaseDeDatosEstudiantes bdd) {
         // Aquí va su código.
+        this.bdd = bdd;
     }
 
     /* Actualiza la interfaz para mostrar que el archivo ha sido modificado. */
     private void setModificada(boolean modificado) {
         // Aquí va su código.
-        setModificada(modificado);
-        menuGuardar.setDisable(!modificado);
+
     }
 
     /* Maneja un evento de cambio en la base de datos. */
@@ -311,6 +317,8 @@ public class ControladorInterfazEstudiantes {
             Estudiante estudiante1,
             Estudiante estudiante2) {
         // Aquí va su código.
+        setModificada(true);
+
         switch (evento) {
             case BASE_LIMPIADA:
 
@@ -334,6 +342,7 @@ public class ControladorInterfazEstudiantes {
      */
     private void cambioSeleccion() {
         // Aquí va su código.
+
     }
 
     /* Crea un diálogo con una pregunta que hay que confirmar. */

@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class Aplicacion extends Application {
 
     /* Vista de la interfaz estudiantes. */
-    private static final String INTERFAZ_ESTUDIANTES_FXML = "hola.fxml";
+    private static final String INTERFAZ_ESTUDIANTES_FXML = "./hola.fxml";
     /* Ícono de la Facultad de Ciencias. */
     // private static final String ICONO_CIENCIAS = "icons/ciencias.png";
 
