@@ -43,6 +43,8 @@ public abstract class ControladorFormaEstudiante {
     protected void cancelar(ActionEvent evento) {
         // Aquí va su código.
         aceptado = false;
+        escenario.close();
+
     }
 
     /**
@@ -63,6 +65,9 @@ public abstract class ControladorFormaEstudiante {
      */
     public boolean isAceptado() {
         // Aquí va su código.
+        if (botonAceptar.isFocused()) {
+            aceptado = true;
+        }
         return aceptado;
     }
 
@@ -80,7 +85,10 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaNombre(String nombre) {
         // Aquí va su código.
-        return nombre != null && !nombre.isEmpty();
+        if (nombre == null || nombre.equals("")) {
+            return false;
+        }
+        return true;
     }
 
     /**
@@ -92,12 +100,18 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaCuenta(String cuenta) {
         // Aquí va su código.
+        if (cuenta == null || cuenta.equals("")) {
+            return false;
+        }
         try {
-            this.cuenta = Integer.parseInt(cuenta);
-            return this.cuenta > 0;
+            int c = Integer.parseInt(cuenta);
+            if (c < 0) {
+                return false;
+            }
         } catch (NumberFormatException nfe) {
             return false;
         }
+        return true;
     }
 
     /**
@@ -108,13 +122,19 @@ public abstract class ControladorFormaEstudiante {
      *         otro caso.
      */
     protected boolean verificaPromedio(String promedio) {
-        // Aquí va su código.
+        // Aquí va su código.\
+        if (promedio == null || promedio.equals("")) {
+            return false;
+        }
         try {
-            this.promedio = Double.parseDouble(promedio);
-            return this.promedio >= 0 && this.promedio <= 10;
+            double p = Double.parseDouble(promedio);
+            if (p < 0 || p > 10) {
+                return false;
+            }
         } catch (NumberFormatException nfe) {
             return false;
         }
+        return true;
     }
 
     /**
@@ -126,11 +146,17 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaEdad(String edad) {
         // Aquí va su código.
+        if (edad == null || edad.equals("")) {
+            return false;
+        }
         try {
-            this.edad = Integer.parseInt(edad);
-            return this.edad > 0;
+            int e = Integer.parseInt(edad);
+            if (e < 0) {
+                return false;
+            }
         } catch (NumberFormatException nfe) {
             return false;
         }
+        return true;
     }
 }

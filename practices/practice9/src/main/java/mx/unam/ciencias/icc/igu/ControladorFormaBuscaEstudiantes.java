@@ -23,90 +23,65 @@ public class ControladorFormaBuscaEstudiantes
     @FXML
     private void initialize() {
         // Aquí va su código.
-        opcionesCampo.getItems().addAll(CampoEstudiante.values());
+        entradaValor.setVerificador(s -> verificaValor(s));
+        entradaValor.textProperty().addListener(
+                (o, v, n) -> revisaValor(null));
     }
 
     /* Revisa el valor después de un cambio. */
     @FXML
     private void revisaValor(ActionEvent evento) {
         // Aquí va su código.
-        CampoEstudiante campo = opcionesCampo.getValue();
-        if (campo == null) {
-            entradaValor.setTooltip(new Tooltip("Seleccione un campo"));
-            entradaValor.esValida();
-            return;
-        }
+        Tooltip.install(entradaValor, getTooltip());
+        String s = entradaValor.getText();
+        botonAceptar.setDisable(!entradaValor.esValida());
     }
 
     /* Manejador para cuando se activa el botón aceptar. */
     @FXML
     private void aceptar(ActionEvent evento) {
         // Aquí va su código.
-        if (opcionesCampo.getValue() == null) {
-            entradaValor.setTooltip(new Tooltip("Seleccione un campo"));
-            entradaValor.esValida();
-            return;
-        }
-
+        aceptado = true;
+        escenario.close();
     }
 
     /* Verifica el valor. */
     private boolean verificaValor(String valor) {
         // Aquí va su código.
-        CampoEstudiante campo = opcionesCampo.getValue();
-        if (campo == null) {
-            entradaValor.setTooltip(new Tooltip("Seleccione un campo"));
-            entradaValor.esValida();
-            return false;
-        }
-        switch (campo) {
+        switch (opcionesCampo.getValue()) {
             case NOMBRE:
-                return valor != null && !valor.isEmpty();
+                return verificaNombre(valor);
             case CUENTA:
-                try {
-                    Integer.parseInt(valor);
-                    return true;
-                } catch (NumberFormatException nfe) {
-                    return false;
-                }
+                return verificaCuenta(valor);
             case PROMEDIO:
-                try {
-                    Double.parseDouble(valor);
-                    return true;
-                } catch (NumberFormatException nfe) {
-                    return false;
-                }
+                return verificaPromedio(valor);
             case EDAD:
-                try {
-                    Integer.parseInt(valor);
-                    return true;
-                } catch (NumberFormatException nfe) {
-                    return false;
-                }
+                return verificaEdad(valor);
             default:
                 return false;
         }
-
     }
 
     /* Obtiene la pista. */
     private Tooltip getTooltip() {
         // Aquí va su código.
-        CampoEstudiante campo = opcionesCampo.getValue();
-        if (campo == null)
-            return new Tooltip("Seleccione un campo");
-        switch (campo) {
-            case CUENTA:
-                return new Tooltip("Ingrese una matrícula");
+        String t = "";
+        switch (opcionesCampo.getValue()) {
             case NOMBRE:
-                return new Tooltip("Ingrese un nombre");
+                t = "Buscar por nombre necesita al menos un carácter";
+                break;
+            case CUENTA:
+                t = "Buscar por cuenta necesita un número entre " +
+                        "1000000 y 99999999";
+                break;
             case PROMEDIO:
-                return new Tooltip("Ingrese un promedio");
+                t = "Buscar por promedio necesita un número entre 0.0 y 10.0";
+                break;
             case EDAD:
-                return new Tooltip("Ingrese una edad");
+                t = "Buscar por edad necesita un número entre 13 y 99";
+                break;
         }
-        return null;
-
+        return new Tooltip(t);
     }
 
     /**
@@ -116,20 +91,20 @@ public class ControladorFormaBuscaEstudiantes
      */
     public Object getValor() {
         // Aquí va su código.
-        CampoEstudiante campo = opcionesCampo.getValue();
-        if (campo == null)
-            return null;
-        switch (campo) {
-            case CUENTA:
-                return entradaValor.getText();
+        String e = entradaValor.getText();
+
+        switch (opcionesCampo.getValue()) {
             case NOMBRE:
-                return entradaValor.getText();
+                return e;
+            case CUENTA:
+                return Integer.valueOf(e);
             case PROMEDIO:
-                return Double.parseDouble(entradaValor.getText());
+                return Double.valueOf(e);
             case EDAD:
-                return Integer.parseInt(entradaValor.getText());
+                return Integer.valueOf(e);
+            default:
+                return null;
         }
-        return null;
     }
 
     /**
@@ -140,7 +115,6 @@ public class ControladorFormaBuscaEstudiantes
     public CampoEstudiante getCampo() {
         // Aquí va su código.
         return opcionesCampo.getValue();
-
     }
 
     /**
@@ -149,6 +123,6 @@ public class ControladorFormaBuscaEstudiantes
     @Override
     public void defineFoco() {
         // Aquí va su código.
-        opcionesCampo.requestFocus();
+        entradaValor.requestFocus();
     }
 }

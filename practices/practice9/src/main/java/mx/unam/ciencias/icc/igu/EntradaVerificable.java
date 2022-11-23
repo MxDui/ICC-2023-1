@@ -15,7 +15,7 @@ public class EntradaVerificable extends TextField {
      */
     public EntradaVerificable() {
         // Aquí va su código.
-        super();
+        this.verificador = x -> false;
     }
 
     /**

@@ -8,6 +8,7 @@ public interface Verificador {
 
     /**
      * Verifica la cadena de texto.
+     * 
      * @param texto la cadena de texto.
      * @return <code>true</code> si la cadena de texto es válida,
      *         <code>false</code> en otro caso.

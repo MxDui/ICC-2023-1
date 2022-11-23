@@ -16,6 +16,10 @@ public class FabricaFormatoCelda<S, T>
         public void updateItem(T elemento, boolean vacio) {
             // Aquí va su código.
             super.updateItem(elemento, vacio);
+            if (vacio || elemento == null)
+                setText("");
+            else
+                setText(getTexto(elemento));
         }
     }
 
@@ -38,13 +42,17 @@ public class FabricaFormatoCelda<S, T>
      * @param formato el formato de la celda.
      */
     public void setFormato(String formato) {
-        // Aquí va su código.
+        // Aquí va su código.\
         this.formato = formato;
     }
 
     /* Regresa el texto correspondiente al elemento. */
     private String getTexto(T elemento) {
         // Aquí va su código.
+        if (elemento == null)
+            return null;
+        if (formato != null && elemento instanceof Number)
+            return String.format(formato, elemento);
         return elemento.toString();
     }
 

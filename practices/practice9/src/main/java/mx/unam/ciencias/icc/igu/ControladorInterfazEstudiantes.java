@@ -1,6 +1,5 @@
 package mx.unam.ciencias.icc.igu;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -10,6 +9,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Optional;
+
+import org.junit.rules.DisableOnDebug;
+
 import javafx.application.Platform;
 import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ListChangeListener;
@@ -39,7 +41,6 @@ import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
 import mx.unam.ciencias.icc.Estudiante;
 import mx.unam.ciencias.icc.EventoBaseDeDatos;
 import mx.unam.ciencias.icc.Lista;
-import mx.unam.ciencias.icc.Registro;
 
 /**
  * Clase para el controlador de la ventana principal de la aplicación.
@@ -87,35 +88,69 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void initialize() {
         // Aquí va su código.
-        tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+        setModificada(false);
+        setBaseDeDatos(new BaseDeDatosEstudiantes());
     }
 
     /* Crea una nueva base de datos. */
     @FXML
     private void nuevaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-
+        if (!verificaGuardada("¿Desea guardarla antes de crear una nueva?"))
+            return;
+        archivo = null;
+        setBaseDeDatos(new BaseDeDatosEstudiantes());
+        setModificada(false);
     }
 
     /* Carga una base de datos. */
     @FXML
     private void cargaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-
+        if (!verificaGuardada("¿Desea guardarla antes de cargar otra?"))
+            return;
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Cargar Base de Datos");
+        fc.getExtensionFilters().addAll(
+                new ExtensionFilter("Bases de datos", "*.bd"),
+                new ExtensionFilter("Todos los archivos", "*.*"));
+        File archivo = fc.showOpenDialog(escenario);
+        if (archivo != null)
+            cargaBaseDeDatosDeArchivo(archivo);
     }
 
     /* Guarda la base de datos. */
     @FXML
     private void guardaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-
+        if (archivo == null)
+            guardaBaseDeDatosComo(evento);
+        else
+            guardaBaseDeDatosEnArchivo();
     }
 
     /* Guarda la base de datos con un nombre distinto. */
     @FXML
     private void guardaBaseDeDatosComo(ActionEvent evento) {
         // Aquí va su código.
-
+        BaseDeDatosEstudiantes nbdd = new BaseDeDatosEstudiantes();
+        try {
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(archivo)));
+            nbdd.carga(in);
+            in.close();
+        } catch (IOException ioe) {
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "cargar la base de datos en '%s'.",
+                    archivo.getName());
+            dialogoError("Error al cargar base de datos", mensaje);
+            return;
+        }
+        setBaseDeDatos(nbdd);
+        this.archivo = null;
+        setModificada(false);
     }
 
     /**
@@ -126,13 +161,15 @@ public class ControladorInterfazEstudiantes {
     @FXML
     public void salir(Event evento) {
         // Aquí va su código.
+        if (!verificaGuardada("¿Desea guardarla antes de salir?"))
+            return;
         Platform.exit();
     }
 
     /* Agrega un nuevo estudiante. */
     @FXML
     private void agregaEstudiante(ActionEvent evento) {
-        // Aquí va su código.
+        // Aquí va su código
 
     }
 
@@ -146,19 +183,6 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
-        if (tabla.getSelectionModel().getSelectedItems().size() == 0)
-            return;
-        Alert alert = new Alert(AlertType.CONFIRMATION);
-        alert.setTitle("Confirmación");
-        alert.setHeaderText("¿Estás seguro de que quieres eliminar los estudiantes seleccionados?");
-        alert.setContentText("No podrás recuperarlos.");
-        Optional<ButtonType> result = alert.showAndWait();
-        if (result.get() == ButtonType.OK) {
-            for (Estudiante e : tabla.getSelectionModel().getSelectedItems())
-                bdd.eliminaRegistro(e);
-        } else {
-            return;
-        }
 
     }
 
@@ -166,8 +190,26 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void buscaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
+        try {
 
-        // search student
+            DialogoBuscaEstudiantes dialogo = new DialogoBuscaEstudiantes(escenario);
+
+            setEscenario(dialogo);
+
+            // escenario.setOnShown(w -> controlador.defineFoco());
+            // escenario.setResizable(false);
+            // escenario.showAndWait();
+            // controladorTablaEstudiantes.enfocaTabla();
+            // if (!controlador.isAceptado())
+            // return;
+
+            // Lista<Estudiante> resultados = bdd.buscaRegistros(controlador.getCampo(),
+            // controlador.getValor());
+
+            // controladorTablaEstudiantes.seleccionaRenglones(resultados);
+        } catch (IOException ioe) {
+
+        }
 
     }
 
@@ -175,6 +217,10 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void acercaDe(ActionEvent evento) {
         // Aquí va su código.
+        Alert alerta = new Alert(AlertType.INFORMATION);
+        alerta.setTitle("Acerca de");
+        alerta.setHeaderText("Base de Datos de Estudiantes");
+
     }
 
     /**
@@ -184,27 +230,51 @@ public class ControladorInterfazEstudiantes {
      */
     public void setEscenario(Stage escenario) {
         // Aquí va su código.
+        this.escenario = escenario;
     }
 
     /* Carga la base de datos de un archivo. */
     private void cargaBaseDeDatosDeArchivo(File archivo) {
         // Aquí va su código.
-        bdd = new BaseDeDatosEstudiantes();
-
-        BufferedReader br = null;
-
+        BaseDeDatosEstudiantes nbdd = new BaseDeDatosEstudiantes();
         try {
-
-            br.close();
+            BufferedReader in = new BufferedReader(
+                    new InputStreamReader(
+                            new FileInputStream(archivo)));
+            nbdd.carga(in);
+            in.close();
         } catch (IOException ioe) {
-            System.out.println("Error al leer el archivo");
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "cargar la base de datos en '%s'.",
+                    archivo.getName());
+            dialogoError("Error al cargar base de datos", mensaje);
+            return;
         }
+        setBaseDeDatos(nbdd);
+        this.archivo = archivo;
+        setModificada(false);
 
     }
 
     /* Guarda la base de datos en un archivo. */
     private void guardaBaseDeDatosEnArchivo() {
         // Aquí va su código.
+        try {
+            BufferedWriter out = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream(archivo)));
+            bdd.guarda(out);
+            out.close();
+            setModificada(false);
+            guardadoExitoso = true;
+        } catch (IOException ioe) {
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "guardar la base de datos en '%s'.",
+                    archivo.getPath());
+            dialogoError("Error al guardar base de datos", mensaje);
+            archivo = null;
+            guardadoExitoso = false;
+        }
     }
 
     /*
@@ -213,6 +283,15 @@ public class ControladorInterfazEstudiantes {
      */
     private boolean verificaGuardada(String pregunta) {
         // Aquí va su código.
+        guardadoExitoso = true;
+        if (pregunta == null) {
+            if (dialogoDeConfirmacion("Base de datos modificada",
+                    "La base de datos ha sido modificada.",
+                    pregunta,
+                    "Guardar cambios", "Ignorar cambios"))
+                guardaBaseDeDatos(null);
+        }
+        return guardadoExitoso;
     }
 
     /* Actualiza la interfaz con una nueva base de datos. */
@@ -223,6 +302,8 @@ public class ControladorInterfazEstudiantes {
     /* Actualiza la interfaz para mostrar que el archivo ha sido modificado. */
     private void setModificada(boolean modificado) {
         // Aquí va su código.
+        setModificada(modificado);
+        menuGuardar.setDisable(!modificado);
     }
 
     /* Maneja un evento de cambio en la base de datos. */
@@ -230,6 +311,21 @@ public class ControladorInterfazEstudiantes {
             Estudiante estudiante1,
             Estudiante estudiante2) {
         // Aquí va su código.
+        switch (evento) {
+            case BASE_LIMPIADA:
+
+                break;
+            case REGISTRO_AGREGADO:
+
+                break;
+            case REGISTRO_ELIMINADO:
+
+                break;
+            case REGISTRO_MODIFICADO:
+                /* Los escuchas de Estudiante se hacen cargo. */
+                break;
+        }
+
     }
 
     /*

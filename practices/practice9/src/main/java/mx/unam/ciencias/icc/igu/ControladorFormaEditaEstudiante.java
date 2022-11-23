@@ -31,35 +31,26 @@ public class ControladorFormaEditaEstudiante
     @FXML
     private void initialize() {
         // Aquí va su código.
-        entradaNombre.setVerificador((String s) -> {
-            return s != null && !s.isEmpty();
-        });
     }
 
     /* Manejador para cuando se activa el botón aceptar. */
     @FXML
     private void aceptar(ActionEvent evento) {
         // Aquí va su código.
-        if (entradaNombre.esValida() && entradaCuenta.esValida() && entradaPromedio.esValida()
-                && entradaEdad.esValida()) {
-            estudiante = new Estudiante(entradaNombre.getText(), Integer.parseInt(entradaCuenta.getText()),
-                    Double.parseDouble(entradaPromedio.getText()), Integer.parseInt(entradaEdad.getText()));
-
-        }
     }
 
     /* Actualiza al estudiante, o lo crea si no existe. */
     private void actualizaEstudiante() {
         // Aquí va su código.
-        if (estudiante == null) {
-            estudiante = new Estudiante(entradaNombre.getText(), Integer.parseInt(entradaCuenta.getText()),
-                    Double.parseDouble(entradaPromedio.getText()), Integer.parseInt(entradaEdad.getText()));
+        if (estudiante != null) {
+            estudiante.setNombre(nombre);
+            estudiante.setCuenta(cuenta);
+            estudiante.setPromedio(promedio);
+            estudiante.setEdad(edad);
         } else {
-            estudiante.setNombre(entradaNombre.getText());
-            estudiante.setCuenta(Integer.parseInt(entradaCuenta.getText()));
-            estudiante.setPromedio(Double.parseDouble(entradaPromedio.getText()));
-            estudiante.setEdad(Integer.parseInt(entradaEdad.getText()));
+            estudiante = new Estudiante(nombre, cuenta, promedio, edad);
         }
+
     }
 
     /**
@@ -70,6 +61,16 @@ public class ControladorFormaEditaEstudiante
     public void setEstudiante(Estudiante estudiante) {
         // Aquí va su código.
         this.estudiante = estudiante;
+        if (estudiante == null)
+            return;
+        this.estudiante = new Estudiante(null, 0, 0, 0);
+        this.estudiante.actualiza(estudiante);
+        entradaNombre.setText(estudiante.getNombre());
+        String c = String.format("%09d", estudiante.getCuenta());
+        entradaCuenta.setText(c);
+        String p = String.format("%2.2f", estudiante.getPromedio());
+        entradaPromedio.setText(p);
+        entradaEdad.setText(String.valueOf(estudiante.getEdad()));
     }
 
     /**
@@ -104,12 +105,11 @@ public class ControladorFormaEditaEstudiante
     /* Verifica que los cuatro campos sean válidos. */
     private void verificaEstudiante() {
         // Aquí va su código.
-        if (entradaNombre.esValida() && entradaCuenta.esValida() && entradaPromedio.esValida()
-                && entradaEdad.esValida()) {
-            botonAceptar.setDisable(false);
-        } else {
-            botonAceptar.setDisable(true);
-        }
+        boolean n = entradaNombre.esValida();
+        boolean c = entradaCuenta.esValida();
+        boolean p = entradaPromedio.esValida();
+        boolean e = entradaEdad.esValida();
+        botonAceptar.setDisable(!n || !c || !p || !e);
     }
 
     /**
@@ -122,15 +122,13 @@ public class ControladorFormaEditaEstudiante
     @Override
     protected boolean verificaCuenta(String cuenta) {
         // Aquí va su código.
-        try {
-            int c = Integer.parseInt(cuenta);
-            if (c < 0) {
-                return false;
-            }
-            return true;
-        } catch (NumberFormatException e) {
+        if (cuenta.length() != 9)
             return false;
+        for (int i = 0; i < cuenta.length(); i++) {
+            if (!Character.isDigit(cuenta.charAt(i)))
+                return false;
         }
+        return true;
     }
 
     /**
@@ -143,15 +141,17 @@ public class ControladorFormaEditaEstudiante
     @Override
     protected boolean verificaPromedio(String promedio) {
         // Aquí va su código.
-        try {
-            double p = Double.parseDouble(promedio);
-            if (p < 0 || p > 10) {
-                return false;
-            }
-            return true;
-        } catch (NumberFormatException e) {
+        if (promedio.length() != 4)
             return false;
+        if (promedio.charAt(0) == '.')
+            return false;
+        if (promedio.charAt(3) == '.')
+            return false;
+        for (int i = 0; i < promedio.length(); i++) {
+            if (!Character.isDigit(promedio.charAt(i)) && promedio.charAt(i) != '.')
+                return false;
         }
+        return true;
     }
 
     /**
@@ -165,12 +165,13 @@ public class ControladorFormaEditaEstudiante
     protected boolean verificaEdad(String edad) {
         // Aquí va su código.
         try {
-            int e = Integer.parseInt(edad);
-            if (e < 0) {
-                return false;
+            int temp = Integer.valueOf(e);
+            if (temp >= 13 && temp <= 99) {
+                edad = temp;
+                return true;
             }
-            return true;
-        } catch (NumberFormatException e) {
+            return false;
+        } catch (NumberFormatException ex) {
             return false;
         }
     }
