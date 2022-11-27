@@ -201,8 +201,17 @@ public class ControladorInterfazEstudiantes {
 
         DialogoEditaEstudiante dialogo;
         try {
-            dialogo = new DialogoEditaEstudiante(escenario, null);
+
+            dialogo = new DialogoEditaEstudiante(escenario, modeloSeleccion.getSelectedItem());
+
             dialogo.showAndWait();
+            if (!dialogo.isAceptado())
+                return;
+
+            bdd.modificaRegistro(modeloSeleccion.getSelectedItem(), dialogo.getEstudiante());
+
+            setModificada(true);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -212,7 +221,7 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
         Lista<Estudiante> aEliminar = new Lista<Estudiante>();
-        for (TablePosition tp : seleccion)
+        for (TablePosition<Estudiante, ?> tp : seleccion)
             aEliminar.agregaFinal(renglones.get(tp.getRow()));
         modeloSeleccion.clearSelection();
         for (Estudiante estudiante : aEliminar)
@@ -235,11 +244,12 @@ public class ControladorInterfazEstudiantes {
             Lista<Estudiante> estudiantes = bdd.buscaRegistros(
                     dialogo.getCampo(), dialogo.getValor());
 
-            // update selected cells to the matching students
             seleccion.clear();
             for (Estudiante e : estudiantes) {
                 seleccion.add(new TablePosition<Estudiante, String>(tabla, renglones.indexOf(e), null));
             }
+
+            cambioSeleccion();
 
         } catch (IOException ioe) {
 
@@ -394,6 +404,9 @@ public class ControladorInterfazEstudiantes {
      */
     private void cambioSeleccion() {
         // Aquí va su código.
+        for (TablePosition<Estudiante, String> pos : seleccion) {
+            modeloSeleccion.select(pos.getRow());
+        }
 
     }
 

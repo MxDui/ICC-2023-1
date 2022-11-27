@@ -143,7 +143,7 @@ public class ControladorFormaEditaEstudiante
         try {
             int temp = Integer.valueOf(cuenta);
             if (temp >= 1000000 && temp <= 99999999) {
-                cuenta = Integer.toString(temp);
+                this.cuenta = temp;
                 return true;
             }
             return false;
@@ -165,7 +165,7 @@ public class ControladorFormaEditaEstudiante
         try {
             double temp = Double.valueOf(promedio);
             if (temp >= 0.0 && temp <= 10.0) {
-                promedio = String.format("%2.2f", temp);
+                this.promedio = temp;
                 return true;
             }
             return false;
@@ -187,7 +187,7 @@ public class ControladorFormaEditaEstudiante
         try {
             int temp = Integer.valueOf(edad);
             if (temp >= 13 && temp <= 99) {
-                edad = Integer.toString(temp);
+                this.edad = temp;
                 return true;
             }
             return false;

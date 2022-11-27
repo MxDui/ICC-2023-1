@@ -37,7 +37,7 @@ public class DialogoBuscaEstudiantes extends Stage {
             initModality(Modality.WINDOW_MODAL);
             initOwner(escenario);
 
-            controlador.setEscenario(escenario);
+            controlador.setEscenario(this);
             escenario.setOnShown(w -> controlador.defineFoco());
 
         } catch (IOException ioe) {

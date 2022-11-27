@@ -39,6 +39,8 @@ public class DialogoEditaEstudiante extends Stage {
             Scene scene = new Scene(root);
             setScene(scene);
 
+            controlador.setEscenario(this);
+
         } catch (IOException ioe) {
             throw new IOException();
         }
