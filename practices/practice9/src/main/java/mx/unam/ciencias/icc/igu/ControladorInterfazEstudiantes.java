@@ -132,34 +132,51 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void guardaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-        if (archivo == null)
-            guardaBaseDeDatosComo(evento);
-        else
-            guardaBaseDeDatosEnArchivo();
+        try {
+            BufferedWriter out = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream(archivo)));
+            bdd.guarda(out);
+            out.close();
+            setModificada(false);
+            guardadoExitoso = true;
+        } catch (IOException ioe) {
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "guardar la base de datos en '%s'.",
+                    archivo.getPath());
+            dialogoError("Error al guardar base de datos", mensaje);
+            archivo = null;
+            guardadoExitoso = false;
+        }
     }
 
     /* Guarda la base de datos con un nombre distinto. */
     @FXML
     private void guardaBaseDeDatosComo(ActionEvent evento) {
-        // Aquí va su código.
-        BaseDeDatosEstudiantes nbdd = new BaseDeDatosEstudiantes();
+        FileChooser fc = new FileChooser();
+
+        fc.setTitle("Guardar Base de Datos como...");
+        fc.getExtensionFilters().addAll(
+                new ExtensionFilter("Bases de datos", "*.bd"),
+                new ExtensionFilter("Todos los archivos", "*.*"));
+        archivo = fc.showSaveDialog(escenario);
+
         try {
-            BufferedReader in = new BufferedReader(
-                    new InputStreamReader(
-                            new FileInputStream(archivo)));
-            nbdd.carga(in);
-            in.close();
+            BufferedWriter out = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream(archivo)));
+            bdd.guarda(out);
+            out.close();
+            setModificada(false);
+            guardadoExitoso = true;
         } catch (IOException ioe) {
             String mensaje = String.format("Ocurrió un error al tratar de " +
-                    "cargar la base de datos en '%s'.",
-                    archivo.getName());
-            dialogoError("Error al cargar base de datos", mensaje);
-            return;
+                    "guardar la base de datos en '%s'.",
+                    archivo.getPath());
+            dialogoError("Error al guardar base de datos", mensaje);
+            archivo = null;
+            guardadoExitoso = false;
         }
-        setBaseDeDatos(nbdd);
-
-        this.archivo = null;
-        setModificada(false);
     }
 
     /**
@@ -304,22 +321,7 @@ public class ControladorInterfazEstudiantes {
     /* Guarda la base de datos en un archivo. */
     private void guardaBaseDeDatosEnArchivo() {
         // Aquí va su código.
-        try {
-            BufferedWriter out = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream(archivo)));
-            bdd.guarda(out);
-            out.close();
-            setModificada(false);
-            guardadoExitoso = true;
-        } catch (IOException ioe) {
-            String mensaje = String.format("Ocurrió un error al tratar de " +
-                    "guardar la base de datos en '%s'.",
-                    archivo.getPath());
-            dialogoError("Error al guardar base de datos", mensaje);
-            archivo = null;
-            guardadoExitoso = false;
-        }
+
     }
 
     /*
