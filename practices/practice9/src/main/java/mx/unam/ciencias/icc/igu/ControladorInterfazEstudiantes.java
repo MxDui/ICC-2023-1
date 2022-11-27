@@ -132,22 +132,10 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void guardaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-        try {
-            BufferedWriter out = new BufferedWriter(
-                    new OutputStreamWriter(
-                            new FileOutputStream(archivo)));
-            bdd.guarda(out);
-            out.close();
-            setModificada(false);
-            guardadoExitoso = true;
-        } catch (IOException ioe) {
-            String mensaje = String.format("Ocurrió un error al tratar de " +
-                    "guardar la base de datos en '%s'.",
-                    archivo.getPath());
-            dialogoError("Error al guardar base de datos", mensaje);
-            archivo = null;
-            guardadoExitoso = false;
-        }
+        if (archivo == null)
+            guardaBaseDeDatosComo(evento);
+        else
+            guardaBaseDeDatosEnArchivo();
     }
 
     /* Guarda la base de datos con un nombre distinto. */
@@ -187,9 +175,9 @@ public class ControladorInterfazEstudiantes {
     @FXML
     public void salir(Event evento) {
         // Aquí va su código.
-        if (!verificaGuardada("¿Desea guardarla antes de salir?"))
+        if (verificaGuardada("¿Desea guardarla antes de salir?"))
             return;
-        Platform.exit();
+        escenario.close();
     }
 
     /* Agrega un nuevo estudiante. */
@@ -223,7 +211,6 @@ public class ControladorInterfazEstudiantes {
     /* Elimina uno o varios estudiantes. */
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
-
         Lista<Estudiante> aEliminar = new Lista<Estudiante>();
         for (TablePosition tp : seleccion)
             aEliminar.agregaFinal(renglones.get(tp.getRow()));
@@ -240,7 +227,6 @@ public class ControladorInterfazEstudiantes {
         try {
 
             DialogoBuscaEstudiantes dialogo = new DialogoBuscaEstudiantes(escenario);
-
             dialogo.showAndWait();
 
             if (!dialogo.isAceptado())
@@ -321,7 +307,22 @@ public class ControladorInterfazEstudiantes {
     /* Guarda la base de datos en un archivo. */
     private void guardaBaseDeDatosEnArchivo() {
         // Aquí va su código.
-
+        try {
+            BufferedWriter out = new BufferedWriter(
+                    new OutputStreamWriter(
+                            new FileOutputStream(archivo)));
+            bdd.guarda(out);
+            out.close();
+            setModificada(false);
+            guardadoExitoso = true;
+        } catch (IOException ioe) {
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "guardar la base de datos en '%s'.",
+                    archivo.getPath());
+            dialogoError("Error al guardar base de datos", mensaje);
+            archivo = null;
+            guardadoExitoso = false;
+        }
     }
 
     /*
