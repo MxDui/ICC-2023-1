@@ -36,6 +36,9 @@ public class EntradaVerificable extends TextField {
      */
     public boolean esValida() {
         // Aquí va su código.
-        return verificador.verifica(getText());
+        boolean b = verificador.verifica(getText());
+        String s = b ? "" : "-fx-background-color:FFCCCCCC;";
+        setStyle(s);
+        return b;
     }
 }

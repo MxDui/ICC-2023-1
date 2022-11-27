@@ -323,8 +323,7 @@ public class TestEstudiante {
                 "Promedio : %2.2f\n" +
                 "Edad     : %d",
                 nombre, cuenta, promedio, edad);
-        System.out.println(estudiante.toString());
-        System.out.println(cadena);
+
         Assert.assertTrue(estudiante.toString().equals(cadena));
     }
 

@@ -188,6 +188,16 @@ public class ControladorInterfazEstudiantes {
         try {
             dialogo = new DialogoEditaEstudiante(escenario, null);
             dialogo.showAndWait();
+
+            if (!dialogo.isAceptado())
+                return;
+
+            Estudiante e = dialogo.getEstudiante();
+
+            bdd.agregaRegistro(e);
+            renglones.add(e);
+            setModificada(true);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -221,11 +231,14 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
         Lista<Estudiante> aEliminar = new Lista<Estudiante>();
-        for (TablePosition<Estudiante, ?> tp : seleccion)
+        for (TablePosition tp : seleccion)
             aEliminar.agregaFinal(renglones.get(tp.getRow()));
         modeloSeleccion.clearSelection();
-        for (Estudiante estudiante : aEliminar)
-            bdd.eliminaRegistro(estudiante);
+
+        for (Estudiante e : aEliminar) {
+            bdd.eliminaRegistro(e);
+            renglones.remove(e);
+        }
 
     }
 
@@ -244,12 +257,11 @@ public class ControladorInterfazEstudiantes {
             Lista<Estudiante> estudiantes = bdd.buscaRegistros(
                     dialogo.getCampo(), dialogo.getValor());
 
-            seleccion.clear();
-            for (Estudiante e : estudiantes) {
-                seleccion.add(new TablePosition<Estudiante, String>(tabla, renglones.indexOf(e), null));
-            }
+            modeloSeleccion.clearSelection();
 
-            cambioSeleccion();
+            for (Estudiante estudiante : estudiantes) {
+                modeloSeleccion.select(estudiante);
+            }
 
         } catch (IOException ioe) {
 
@@ -404,7 +416,7 @@ public class ControladorInterfazEstudiantes {
      */
     private void cambioSeleccion() {
         // Aquí va su código.
-        for (TablePosition<Estudiante, String> pos : seleccion) {
+        for (TablePosition pos : seleccion) {
             modeloSeleccion.select(pos.getRow());
         }
 

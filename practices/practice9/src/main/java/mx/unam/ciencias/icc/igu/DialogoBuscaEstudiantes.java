@@ -14,7 +14,7 @@ import mx.unam.ciencias.icc.CampoEstudiante;
 public class DialogoBuscaEstudiantes extends Stage {
 
     /* Vista de la forma para realizar búsquedas de estudiantes. */
-    private static final String BUSCA_ESTUDIANTES_FXML = "mx/unam/ciencias/icc/forma-busca-estudiantes.fxml";
+    private static final String BUSCA_ESTUDIANTES_FXML = "fxml/forma-busca-estudiantes.fxml";
 
     /* El controlador. */
     private ControladorFormaBuscaEstudiantes controlador;

@@ -14,7 +14,7 @@ import javafx.stage.Stage;
 public class Aplicacion extends Application {
 
     /* Vista de la interfaz estudiantes. */
-    private static final String INTERFAZ_ESTUDIANTES_FXML = "./hola.fxml";
+    private static final String INTERFAZ_ESTUDIANTES_FXML = "/fxml/interfaz-estudiantes.fxml";
     /* Ícono de la Facultad de Ciencias. */
     private static final String ICONO_CIENCIAS = "icons/ciencias.png";
 
@@ -29,7 +29,8 @@ public class Aplicacion extends Application {
         // Aquí va su código.
 
         FXMLLoader cargador = new FXMLLoader();
-        cargador.setLocation(getClass().getResource(INTERFAZ_ESTUDIANTES_FXML));
+        cargador.setLocation(
+                getClass().getResource(INTERFAZ_ESTUDIANTES_FXML));
         BorderPane raiz = cargador.load();
         ControladorInterfazEstudiantes controlador = cargador.getController();
         controlador.setEscenario(escenario);
@@ -37,7 +38,7 @@ public class Aplicacion extends Application {
         Scene escena = new Scene(raiz);
         escenario.setScene(escena);
         escenario.setTitle("Base de datos de estudiantes");
-        // escenario.getIcons().add(new Image(ICONO_CIENCIAS));
+        escenario.getIcons().add(new Image(ICONO_CIENCIAS));
         escenario.show();
     }
 }
