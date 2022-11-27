@@ -33,7 +33,6 @@ public class ControladorFormaBuscaEstudiantes
     private void revisaValor(ActionEvent evento) {
         // Aquí va su código.
         Tooltip.install(entradaValor, getTooltip());
-        String s = entradaValor.getText();
         botonAceptar.setDisable(!entradaValor.esValida());
     }
 
@@ -42,6 +41,8 @@ public class ControladorFormaBuscaEstudiantes
     private void aceptar(ActionEvent evento) {
         // Aquí va su código.
         aceptado = true;
+
+        // close the scene
         escenario.close();
     }
 

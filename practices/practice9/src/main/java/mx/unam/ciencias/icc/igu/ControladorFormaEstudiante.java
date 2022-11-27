@@ -43,8 +43,9 @@ public abstract class ControladorFormaEstudiante {
     protected void cancelar(ActionEvent evento) {
         // Aquí va su código.
         aceptado = false;
-        escenario.close();
 
+        // close window modal in the stage
+        escenario.close();
     }
 
     /**
@@ -55,6 +56,12 @@ public abstract class ControladorFormaEstudiante {
     public void setEscenario(Stage escenario) {
         // Aquí va su código.
         this.escenario = escenario;
+        Scene escena = escenario.getScene();
+        KeyCodeCombination combinacion;
+        combinacion = new KeyCodeCombination(KeyCode.ENTER,
+                KeyCombination.CONTROL_DOWN);
+        ObservableMap<KeyCombination, Runnable> accs = escena.getAccelerators();
+        accs.put(combinacion, () -> botonAceptar.fire());
     }
 
     /**
@@ -65,10 +72,8 @@ public abstract class ControladorFormaEstudiante {
      */
     public boolean isAceptado() {
         // Aquí va su código.
-        if (botonAceptar.isFocused()) {
-            aceptado = true;
-        }
         return aceptado;
+
     }
 
     /**
@@ -85,10 +90,12 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaNombre(String nombre) {
         // Aquí va su código.
-        if (nombre == null || nombre.equals("")) {
-            return false;
+        String temp = nombre.trim();
+        if (temp.length() > 0) {
+            this.nombre = temp;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -100,18 +107,16 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaCuenta(String cuenta) {
         // Aquí va su código.
-        if (cuenta == null || cuenta.equals("")) {
-            return false;
-        }
         try {
-            int c = Integer.parseInt(cuenta);
-            if (c < 0) {
-                return false;
+            int temp = Integer.valueOf(cuenta);
+            if (temp >= 1000000 && temp <= 99999999) {
+                this.cuenta = temp;
+                return true;
             }
-        } catch (NumberFormatException nfe) {
+            return false;
+        } catch (NumberFormatException e) {
             return false;
         }
-        return true;
     }
 
     /**
@@ -123,18 +128,16 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaPromedio(String promedio) {
         // Aquí va su código.\
-        if (promedio == null || promedio.equals("")) {
-            return false;
-        }
         try {
-            double p = Double.parseDouble(promedio);
-            if (p < 0 || p > 10) {
-                return false;
+            double temp = Double.valueOf(promedio);
+            if (temp >= 0.0 && temp <= 10.0) {
+                this.promedio = temp;
+                return true;
             }
-        } catch (NumberFormatException nfe) {
+            return false;
+        } catch (NumberFormatException e) {
             return false;
         }
-        return true;
     }
 
     /**
@@ -146,17 +149,15 @@ public abstract class ControladorFormaEstudiante {
      */
     protected boolean verificaEdad(String edad) {
         // Aquí va su código.
-        if (edad == null || edad.equals("")) {
-            return false;
-        }
         try {
-            int e = Integer.parseInt(edad);
-            if (e < 0) {
-                return false;
+            int temp = Integer.valueOf(edad);
+            if (temp >= 13 && temp <= 99) {
+                this.edad = temp;
+                return true;
             }
-        } catch (NumberFormatException nfe) {
+            return false;
+        } catch (NumberFormatException ex) {
             return false;
         }
-        return true;
     }
 }

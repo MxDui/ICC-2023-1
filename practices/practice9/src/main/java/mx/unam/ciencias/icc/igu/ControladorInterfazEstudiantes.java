@@ -26,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
@@ -38,6 +39,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
+import mx.unam.ciencias.icc.CampoEstudiante;
 import mx.unam.ciencias.icc.Estudiante;
 import mx.unam.ciencias.icc.EventoBaseDeDatos;
 import mx.unam.ciencias.icc.Lista;
@@ -101,16 +103,12 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void nuevaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-        if (!verificaGuardada("¿Desea guardarla antes de crear una nueva?"))
+        if (verificaGuardada("¿Desea guardarla antes de crear una nuevaaaa?"))
             return;
         archivo = null;
         setBaseDeDatos(new BaseDeDatosEstudiantes());
         setModificada(false);
-
-        // clear selection, re render table and scroll to top
-        tabla.getSelectionModel().clearSelection();
-        tabla.refresh();
-        tabla.scrollTo(0);
+        tabla.getItems().clear();
 
     }
 
@@ -118,7 +116,7 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void cargaBaseDeDatos(ActionEvent evento) {
         // Aquí va su código.
-        if (!verificaGuardada("¿Desea guardarla antes de cargar otra?"))
+        if (verificaGuardada("¿Desea guardarla antes de cargar otra?"))
             return;
         FileChooser fc = new FileChooser();
         fc.setTitle("Cargar Base de Datos");
@@ -208,16 +206,13 @@ public class ControladorInterfazEstudiantes {
     /* Elimina uno o varios estudiantes. */
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
-        // Aquí va su código.
-        // remove selected items from the table list
-        ObservableList<Estudiante> items = tabla.getItems();
-        ObservableList<Estudiante> itemsSeleccionados = tabla.getSelectionModel().getSelectedItems();
-        items.removeAll(itemsSeleccionados);
 
-        // remove selected items from the database
-        for (Estudiante e : itemsSeleccionados) {
-            bdd.eliminaRegistro(e);
-        }
+        Lista<Estudiante> aEliminar = new Lista<Estudiante>();
+        for (TablePosition tp : seleccion)
+            aEliminar.agregaFinal(renglones.get(tp.getRow()));
+        modeloSeleccion.clearSelection();
+        for (Estudiante estudiante : aEliminar)
+            bdd.eliminaRegistro(estudiante);
 
     }
 
@@ -231,7 +226,23 @@ public class ControladorInterfazEstudiantes {
 
             dialogo.showAndWait();
 
+            if (!dialogo.isAceptado())
+                return;
+
+            Lista<Estudiante> estudiantes = bdd.buscaRegistros(
+                    dialogo.getCampo(), dialogo.getValor());
+
+            // update selected cells to the matching students
+            seleccion.clear();
+            for (Estudiante e : estudiantes) {
+                seleccion.add(new TablePosition<Estudiante, String>(tabla, renglones.indexOf(e), null));
+            }
+
         } catch (IOException ioe) {
+
+            String mensaje = String.format("Ocurrió un error al tratar de " + "cargar el diálogo de búsqueda.");
+            dialogoError("Error al cargar diálogo de búsqueda", mensaje);
+            return;
 
         }
 
@@ -281,7 +292,6 @@ public class ControladorInterfazEstudiantes {
             return;
         }
         setBaseDeDatos(nbdd);
-        // update table
         for (Estudiante e : nbdd.getRegistros()) {
             tabla.getItems().add(e);
         }
@@ -318,15 +328,20 @@ public class ControladorInterfazEstudiantes {
      */
     private boolean verificaGuardada(String pregunta) {
         // Aquí va su código.
-        guardadoExitoso = true;
-        if (pregunta == null) {
-            if (dialogoDeConfirmacion("Base de datos modificada",
-                    "La base de datos ha sido modificada.",
+        if (guardadoExitoso == false) {
+
+            Boolean result = dialogoDeConfirmacion("Guardar", "Los cambios no se guardaran si no guarda",
                     pregunta,
-                    "Guardar cambios", "Ignorar cambios"))
-                guardaBaseDeDatos(null);
+                    "Guardar", "No guardar");
+
+            if (result == true) {
+                guardaBaseDeDatosEnArchivo();
+                return true;
+            } else {
+                return false;
+            }
         }
-        return guardadoExitoso;
+        return false;
     }
 
     /* Actualiza la interfaz con una nueva base de datos. */
@@ -350,16 +365,21 @@ public class ControladorInterfazEstudiantes {
 
         switch (evento) {
             case BASE_LIMPIADA:
-
+                tabla.getItems().clear();
                 break;
             case REGISTRO_AGREGADO:
+                tabla.getItems().add(estudiante1);
 
                 break;
             case REGISTRO_ELIMINADO:
+                tabla.getItems().remove(estudiante1);
 
                 break;
             case REGISTRO_MODIFICADO:
                 /* Los escuchas de Estudiante se hacen cargo. */
+
+                tabla.refresh();
+
                 break;
         }
 
