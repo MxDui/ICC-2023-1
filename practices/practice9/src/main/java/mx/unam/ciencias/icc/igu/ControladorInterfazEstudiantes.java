@@ -106,6 +106,12 @@ public class ControladorInterfazEstudiantes {
         archivo = null;
         setBaseDeDatos(new BaseDeDatosEstudiantes());
         setModificada(false);
+
+        // clear selection, re render table and scroll to top
+        tabla.getSelectionModel().clearSelection();
+        tabla.refresh();
+        tabla.scrollTo(0);
+
     }
 
     /* Carga una base de datos. */
@@ -175,22 +181,12 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void agregaEstudiante(ActionEvent evento) {
         // Aquí va su código
+        DialogoEditaEstudiante dialogo;
         try {
-            FXMLLoader cargador = new FXMLLoader(
-                    getClass().getResource("forma-edita-estudiante.fxml"));
-            AnchorPane panel = (AnchorPane) cargador.load();
-            ControladorFormaEstudiante controlador = cargador.<ControladorFormaEstudiante>getController();
-            controlador.setEscenario(escenario);
-
-            Scene escena = new Scene(panel);
-            Stage escenario = new Stage();
-            escenario.setScene(escena);
-            escenario.initModality(Modality.APPLICATION_MODAL);
-            escenario.showAndWait();
-        } catch (IOException ioe) {
-            String mensaje = String.format("Ocurrió un error al tratar de " +
-                    "cargar la ventana de agregar estudiante.");
-            dialogoError("Error al cargar ventana", mensaje);
+            dialogo = new DialogoEditaEstudiante(escenario, null);
+            dialogo.showAndWait();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
 
     }
@@ -213,6 +209,15 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
+        // remove selected items from the table list
+        ObservableList<Estudiante> items = tabla.getItems();
+        ObservableList<Estudiante> itemsSeleccionados = tabla.getSelectionModel().getSelectedItems();
+        items.removeAll(itemsSeleccionados);
+
+        // remove selected items from the database
+        for (Estudiante e : itemsSeleccionados) {
+            bdd.eliminaRegistro(e);
+        }
 
     }
 
@@ -374,10 +379,30 @@ public class ControladorInterfazEstudiantes {
             String mensaje, String pregunta,
             String aceptar, String cancelar) {
         // Aquí va su código.
+        Alert dialogo = new Alert(AlertType.CONFIRMATION);
+        dialogo.initOwner(escenario);
+        dialogo.initModality(Modality.WINDOW_MODAL);
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(mensaje);
+        dialogo.setContentText(pregunta);
+        ButtonType botonAceptar = new ButtonType(aceptar);
+        ButtonType botonCancelar = new ButtonType(cancelar);
+        dialogo.getButtonTypes().setAll(botonAceptar, botonCancelar);
+        Optional<ButtonType> resultado = dialogo.showAndWait();
+        return resultado.get() == botonAceptar;
+
     }
 
     /* Muestra un diálogo de error. */
     private void dialogoError(String titulo, String mensaje) {
         // Aquí va su código.
+        Alert dialogo = new Alert(AlertType.ERROR);
+        dialogo.initOwner(escenario);
+        dialogo.initModality(Modality.WINDOW_MODAL);
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(null);
+        dialogo.setContentText(mensaje);
+        dialogo.showAndWait();
+
     }
 }

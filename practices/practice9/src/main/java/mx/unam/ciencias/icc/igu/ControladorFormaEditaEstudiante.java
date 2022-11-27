@@ -31,12 +31,30 @@ public class ControladorFormaEditaEstudiante
     @FXML
     private void initialize() {
         // Aquí va su código.
+        entradaNombre.setVerificador(n -> verificaNombre(n));
+        entradaCuenta.setVerificador(c -> verificaCuenta(c));
+        entradaPromedio.setVerificador(p -> verificaPromedio(p));
+        entradaEdad.setVerificador(e -> verificaEdad(e));
+
+        entradaNombre.textProperty().addListener(
+                (o, v, n) -> verificaEstudiante());
+        entradaCuenta.textProperty().addListener(
+                (o, v, n) -> verificaEstudiante());
+        entradaPromedio.textProperty().addListener(
+                (o, v, n) -> verificaEstudiante());
+        entradaEdad.textProperty().addListener(
+                (o, v, n) -> verificaEstudiante());
     }
 
     /* Manejador para cuando se activa el botón aceptar. */
     @FXML
     private void aceptar(ActionEvent evento) {
         // Aquí va su código.
+
+        actualizaEstudiante();
+        aceptado = true;
+
+        escenario.close();
     }
 
     /* Actualiza al estudiante, o lo crea si no existe. */
@@ -122,13 +140,16 @@ public class ControladorFormaEditaEstudiante
     @Override
     protected boolean verificaCuenta(String cuenta) {
         // Aquí va su código.
-        if (cuenta.length() != 9)
+        try {
+            int temp = Integer.valueOf(cuenta);
+            if (temp >= 1000000 && temp <= 99999999) {
+                cuenta = Integer.toString(temp);
+                return true;
+            }
             return false;
-        for (int i = 0; i < cuenta.length(); i++) {
-            if (!Character.isDigit(cuenta.charAt(i)))
-                return false;
+        } catch (NumberFormatException e) {
+            return false;
         }
-        return true;
     }
 
     /**
@@ -141,17 +162,16 @@ public class ControladorFormaEditaEstudiante
     @Override
     protected boolean verificaPromedio(String promedio) {
         // Aquí va su código.
-        if (promedio.length() != 4)
+        try {
+            double temp = Double.valueOf(promedio);
+            if (temp >= 0.0 && temp <= 10.0) {
+                promedio = String.format("%2.2f", temp);
+                return true;
+            }
             return false;
-        if (promedio.charAt(0) == '.')
+        } catch (NumberFormatException e) {
             return false;
-        if (promedio.charAt(3) == '.')
-            return false;
-        for (int i = 0; i < promedio.length(); i++) {
-            if (!Character.isDigit(promedio.charAt(i)) && promedio.charAt(i) != '.')
-                return false;
         }
-        return true;
     }
 
     /**
@@ -165,9 +185,9 @@ public class ControladorFormaEditaEstudiante
     protected boolean verificaEdad(String edad) {
         // Aquí va su código.
         try {
-            int temp = Integer.valueOf(e);
+            int temp = Integer.valueOf(edad);
             if (temp >= 13 && temp <= 99) {
-                edad = temp;
+                edad = Integer.toString(temp);
                 return true;
             }
             return false;
