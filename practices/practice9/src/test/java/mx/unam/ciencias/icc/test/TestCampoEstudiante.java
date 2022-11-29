@@ -18,12 +18,14 @@ import org.junit.rules.Timeout;
 public class TestCampoEstudiante {
 
     /** Expiración para que ninguna prueba tarde más de 5 segundos. */
-    @Rule public Timeout expiracion = Timeout.seconds(5);
+    @Rule
+    public Timeout expiracion = Timeout.seconds(5);
 
     /**
      * Prueba unitaria para {@link CampoEstudiante#toString}.
      */
-    @Test public void testToString() {
+    @Test
+    public void testToString() {
         String s = CampoEstudiante.NOMBRE.toString();
         Assert.assertTrue(s.equals("Nombre"));
         s = CampoEstudiante.CUENTA.toString();

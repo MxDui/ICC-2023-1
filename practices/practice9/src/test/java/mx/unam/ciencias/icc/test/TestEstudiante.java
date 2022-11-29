@@ -323,7 +323,6 @@ public class TestEstudiante {
                 "Promedio : %2.2f\n" +
                 "Edad     : %d",
                 nombre, cuenta, promedio, edad);
-
         Assert.assertTrue(estudiante.toString().equals(cadena));
     }
 
@@ -391,7 +390,6 @@ public class TestEstudiante {
 
         try {
             estudiante.deseria(linea);
-
         } catch (ExcepcionLineaInvalida eli) {
             Assert.fail();
         }

@@ -10,36 +10,25 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.Optional;
 
-import org.junit.rules.DisableOnDebug;
-
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
-import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
-import mx.unam.ciencias.icc.CampoEstudiante;
 import mx.unam.ciencias.icc.Estudiante;
 import mx.unam.ciencias.icc.EventoBaseDeDatos;
 import mx.unam.ciencias.icc.Lista;
@@ -90,13 +79,17 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void initialize() {
         // Aquí va su código.
-        tabla.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         renglones = tabla.getItems();
         modeloSeleccion = tabla.getSelectionModel();
+        modeloSeleccion.setSelectionMode(SelectionMode.MULTIPLE);
         seleccion = modeloSeleccion.getSelectedCells();
+        ListChangeListener<TablePosition> lcl = c -> cambioSeleccion();
+        seleccion.addListener(lcl);
+        cambioSeleccion();
 
         setModificada(false);
         setBaseDeDatos(new BaseDeDatosEstudiantes());
+
     }
 
     /* Crea una nueva base de datos. */
@@ -175,9 +168,11 @@ public class ControladorInterfazEstudiantes {
     @FXML
     public void salir(Event evento) {
         // Aquí va su código.
-        if (verificaGuardada("¿Desea guardarla antes de salir?"))
+        if (!verificaGuardada("¿ Desea ␣ guardarla ␣ antes ␣de␣ salir ?")) {
+            evento.consume();
             return;
-        escenario.close();
+        }
+        Platform.exit();
     }
 
     /* Agrega un nuevo estudiante. */
@@ -187,20 +182,17 @@ public class ControladorInterfazEstudiantes {
         DialogoEditaEstudiante dialogo;
         try {
             dialogo = new DialogoEditaEstudiante(escenario, null);
-            dialogo.showAndWait();
-
-            if (!dialogo.isAceptado())
-                return;
-
-            Estudiante e = dialogo.getEstudiante();
-
-            bdd.agregaRegistro(e);
-            renglones.add(e);
-            setModificada(true);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ioe) {
+            String mensaje = (" Ocurrió un error al tratar de cargar el " +
+                    "archivo fxml del diálogo.");
+            dialogoError(" Error al cargar diálogo", mensaje);
+            return;
         }
+        dialogo.showAndWait();
+        tabla.requestFocus();
+        if (!dialogo.isAceptado())
+            return;
+        bdd.agregaRegistro(dialogo.getEstudiante());
 
     }
 
@@ -209,27 +201,38 @@ public class ControladorInterfazEstudiantes {
     private void editaEstudiante(ActionEvent evento) {
         // Aquí va su código.
 
+        int r = seleccion.get(0).getRow();
+        Estudiante estudiante = renglones.get(r);
         DialogoEditaEstudiante dialogo;
         try {
-
-            dialogo = new DialogoEditaEstudiante(escenario, modeloSeleccion.getSelectedItem());
-
-            dialogo.showAndWait();
-            if (!dialogo.isAceptado())
-                return;
-
-            bdd.modificaRegistro(modeloSeleccion.getSelectedItem(), dialogo.getEstudiante());
-
-            setModificada(true);
-
-        } catch (IOException e) {
-            e.printStackTrace();
+            dialogo = new DialogoEditaEstudiante(escenario,
+                    estudiante);
+        } catch (IOException ioe) {
+            String mensaje = (" Ocurri ó␣un␣ error ␣al␣ tratar ␣de␣" +
+                    " cargar ␣el␣diá logo ␣de␣ estudiante .");
+            dialogoError(" Error ␣al␣ cargar ␣ interfaz ", mensaje);
+            return;
         }
+        dialogo.showAndWait();
+        tabla.requestFocus();
+        if (!dialogo.isAceptado())
+            return;
+        bdd.modificaRegistro(estudiante, dialogo.getEstudiante());
     }
 
     /* Elimina uno o varios estudiantes. */
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
+        int s = seleccion.size();
+        String titulo = (s > 1) ? " Elimina  estudiantes " : " Elimina  estudiante ";
+        String mensaje = (s > 1) ? " Esto eliminará a los estudiantes seleccionados "
+                : " Esto eliminará al estudiante seleccionado ";
+        String aceptar = titulo;
+        String cancelar = (s > 1) ? " Conservar estudiantes " : " Conservar estudiante ";
+        if (!dialogoDeConfirmacion(
+                titulo, mensaje, "¿Está seguro ?",
+                aceptar, cancelar))
+            return;
         Lista<Estudiante> aEliminar = new Lista<Estudiante>();
         for (TablePosition tp : seleccion)
             aEliminar.agregaFinal(renglones.get(tp.getRow()));
@@ -280,12 +283,15 @@ public class ControladorInterfazEstudiantes {
         Alert dialogo = new Alert(AlertType.INFORMATION);
         dialogo.initOwner(escenario);
         dialogo.initModality(Modality.WINDOW_MODAL);
-        dialogo.setTitle("Administrador de Estudiantes.");
+        dialogo.setTitle(" Acerca ␣de␣ Administrador ␣" +
+                "de␣ Estudiantes ");
         dialogo.setHeaderText(null);
-        dialogo.setContentText("Aplicación para administrar estudiantes.\n" +
-                "Copyright © 2022 Facultad de Ciencias, UNAM.");
+        dialogo.setContentText(" Aplicaci ón␣ para ␣ administrar ␣" +
+                " estudiantes .\n" +
+                " Copyright ␣©␣ 2022 ␣ Facultad ␣" +
+                "de␣ Ciencias ,␣ UNAM .");
         dialogo.showAndWait();
-
+        tabla.requestFocus();
     }
 
     /**
@@ -307,22 +313,17 @@ public class ControladorInterfazEstudiantes {
                     new InputStreamReader(
                             new FileInputStream(archivo)));
             nbdd.carga(in);
-
             in.close();
+            this.archivo = archivo;
+            setBaseDeDatos(nbdd);
         } catch (IOException ioe) {
-            String mensaje = String.format("Ocurrió un error al tratar de " +
-                    "cargar la base de datos en '%s'.",
+            String mensaje = String.format(
+                    " Ocurrió un error al tratar de cargar la base de datos " +
+                            "de %s .",
                     archivo.getName());
-            dialogoError("Error al cargar base de datos", mensaje);
-            return;
-        }
-        setBaseDeDatos(nbdd);
-        for (Estudiante e : nbdd.getRegistros()) {
-            tabla.getItems().add(e);
-        }
 
-        this.archivo = archivo;
-        setModificada(false);
+            dialogoError(" Error al cargar base de datos ", mensaje);
+        }
 
     }
 
@@ -372,13 +373,26 @@ public class ControladorInterfazEstudiantes {
     /* Actualiza la interfaz con una nueva base de datos. */
     private void setBaseDeDatos(BaseDeDatosEstudiantes bdd) {
         // Aquí va su código.
+        if (this.bdd != null)
+            this.bdd.limpia();
         this.bdd = bdd;
+        for (Estudiante estudiante : bdd.getRegistros())
+            renglones.add(estudiante);
+        tabla.sort();
+        bdd.agregaEscucha((e, r, s) -> eventoBaseDeDatos(e, r, s));
+        setModificada(false);
     }
 
     /* Actualiza la interfaz para mostrar que el archivo ha sido modificado. */
     private void setModificada(boolean modificado) {
         // Aquí va su código.
+        // menuGuardar.setDisable(!modificado);
+        // String a = (archivo != null) ? archivo.getName() : "<Nuevo >";
+        // String t = "Administrador de Estudiantes - " + a;
 
+        // if (modificado)
+        // t += "*";
+        // escenario.setTitle(t);
     }
 
     /* Maneja un evento de cambio en la base de datos. */
@@ -386,25 +400,23 @@ public class ControladorInterfazEstudiantes {
             Estudiante estudiante1,
             Estudiante estudiante2) {
         // Aquí va su código.
-        setModificada(true);
-
         switch (evento) {
             case BASE_LIMPIADA:
-                tabla.getItems().clear();
+                renglones.clear();
                 break;
             case REGISTRO_AGREGADO:
-                tabla.getItems().add(estudiante1);
-
+                setModificada(true);
+                renglones.add(estudiante1);
+                tabla.sort();
                 break;
             case REGISTRO_ELIMINADO:
-                tabla.getItems().remove(estudiante1);
-
+                setModificada(true);
+                renglones.remove(estudiante1);
+                tabla.sort();
                 break;
             case REGISTRO_MODIFICADO:
-                /* Los escuchas de Estudiante se hacen cargo. */
-
-                tabla.refresh();
-
+                setModificada(true);
+                Platform.runLater(() -> tabla.sort());
                 break;
         }
 
@@ -416,9 +428,11 @@ public class ControladorInterfazEstudiantes {
      */
     private void cambioSeleccion() {
         // Aquí va su código.
-        for (TablePosition pos : seleccion) {
-            modeloSeleccion.select(pos.getRow());
-        }
+        int s = seleccion.size();
+        menuEliminar.setDisable(s == 0);
+        menuEditar.setDisable(s != 1);
+        botonEliminar.setDisable(s == 0);
+        botonEditar.setDisable(s != 1);
 
     }
 
@@ -445,12 +459,11 @@ public class ControladorInterfazEstudiantes {
     private void dialogoError(String titulo, String mensaje) {
         // Aquí va su código.
         Alert dialogo = new Alert(AlertType.ERROR);
-        dialogo.initOwner(escenario);
-        dialogo.initModality(Modality.WINDOW_MODAL);
         dialogo.setTitle(titulo);
         dialogo.setHeaderText(null);
         dialogo.setContentText(mensaje);
         dialogo.showAndWait();
+        tabla.requestFocus();
 
     }
 }

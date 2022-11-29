@@ -24,7 +24,8 @@ import org.junit.rules.Timeout;
 public class TestBaseDeDatosEstudiantes {
 
     /** Expiración para que ninguna prueba tarde más de 5 segundos. */
-    @Rule public Timeout expiracion = Timeout.seconds(5);
+    @Rule
+    public Timeout expiracion = Timeout.seconds(5);
 
     /* Generador de números aleatorios. */
     private Random random;
@@ -47,23 +48,26 @@ public class TestBaseDeDatosEstudiantes {
      * Prueba unitaria para {@link
      * BaseDeDatosEstudiantes#BaseDeDatosEstudiantes}.
      */
-    @Test public void testConstructor() {
+    @Test
+    public void testConstructor() {
         Lista<Estudiante> estudiantes = bdd.getRegistros();
         Assert.assertFalse(estudiantes == null);
         Assert.assertTrue(estudiantes.getLongitud() == 0);
         Assert.assertTrue(bdd.getNumRegistros() == 0);
-        bdd.agregaEscucha((e, r1, r2) -> {});
+        bdd.agregaEscucha((e, r1, r2) -> {
+        });
     }
 
     /**
      * Prueba unitaria para {@link BaseDeDatos#getNumRegistros}.
      */
-    @Test public void testGetNumRegistros() {
+    @Test
+    public void testGetNumRegistros() {
         Assert.assertTrue(bdd.getNumRegistros() == 0);
         for (int i = 0; i < total; i++) {
             Estudiante e = TestEstudiante.estudianteAleatorio();
             bdd.agregaRegistro(e);
-            Assert.assertTrue(bdd.getNumRegistros() == i+1);
+            Assert.assertTrue(bdd.getNumRegistros() == i + 1);
         }
         Assert.assertTrue(bdd.getNumRegistros() == total);
     }
@@ -71,7 +75,8 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#getRegistros}.
      */
-    @Test public void testGetRegistros() {
+    @Test
+    public void testGetRegistros() {
         Lista<Estudiante> l = bdd.getRegistros();
         Lista<Estudiante> r = bdd.getRegistros();
         Assert.assertTrue(l.equals(r));
@@ -93,7 +98,8 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#agregaRegistro}.
      */
-    @Test public void testAgregaRegistro() {
+    @Test
+    public void testAgregaRegistro() {
         for (int i = 0; i < total; i++) {
             Estudiante e = TestEstudiante.estudianteAleatorio();
             Assert.assertFalse(bdd.getRegistros().contiene(e));
@@ -102,13 +108,13 @@ public class TestBaseDeDatosEstudiantes {
             Lista<Estudiante> l = bdd.getRegistros();
             Assert.assertTrue(l.get(l.getLongitud() - 1).equals(e));
         }
-        boolean[] llamado =  { false };
+        boolean[] llamado = { false };
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_AGREGADO);
-                Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
-                Assert.assertTrue(r2 == null);
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_AGREGADO);
+            Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
+            Assert.assertTrue(r2 == null);
+            llamado[0] = true;
+        });
         bdd.agregaRegistro(new Estudiante("A", 1, 1, 1));
         Assert.assertTrue(llamado[0]);
     }
@@ -116,7 +122,8 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#eliminaRegistro}.
      */
-    @Test public void testEliminaRegistro() {
+    @Test
+    public void testEliminaRegistro() {
         int ini = random.nextInt(1000000);
         for (int i = 0; i < total; i++) {
             Estudiante e = TestEstudiante.estudianteAleatorio(ini + i);
@@ -133,21 +140,21 @@ public class TestBaseDeDatosEstudiantes {
         Estudiante estudiante = new Estudiante("A", 1, 1, 1);
         bdd.agregaRegistro(estudiante);
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_ELIMINADO);
-                Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
-                Assert.assertTrue(r2 == null);
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_ELIMINADO);
+            Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
+            Assert.assertTrue(r2 == null);
+            llamado[0] = true;
+        });
         bdd.eliminaRegistro(estudiante);
         Assert.assertTrue(llamado[0]);
         bdd = new BaseDeDatosEstudiantes();
         llamado[0] = false;
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_ELIMINADO);
-                Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
-                Assert.assertTrue(r2 == null);
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_ELIMINADO);
+            Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
+            Assert.assertTrue(r2 == null);
+            llamado[0] = true;
+        });
         bdd.eliminaRegistro(estudiante);
         Assert.assertTrue(llamado[0]);
     }
@@ -155,7 +162,8 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#modificaRegistro}.
      */
-    @Test public void testModificaRegistro() {
+    @Test
+    public void testModificaRegistro() {
         for (int i = 0; i < total; i++) {
             Estudiante e = TestEstudiante.estudianteAleatorio(total + i);
             Assert.assertFalse(bdd.getRegistros().contiene(e));
@@ -169,11 +177,11 @@ public class TestBaseDeDatosEstudiantes {
         bdd.agregaRegistro(a);
         boolean[] llamado = { false };
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_MODIFICADO);
-                Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
-                Assert.assertTrue(r2.equals(new Estudiante("B", 2, 2, 2)));
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_MODIFICADO);
+            Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
+            Assert.assertTrue(r2.equals(new Estudiante("B", 2, 2, 2)));
+            llamado[0] = true;
+        });
         Estudiante c = new Estudiante("A", 1, 1, 1);
         bdd.modificaRegistro(c, b);
         Assert.assertTrue(llamado[0]);
@@ -191,40 +199,41 @@ public class TestBaseDeDatosEstudiantes {
         b = new Estudiante("B", 2, 2, 2);
         bdd.agregaRegistro(a);
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_MODIFICADO);
-                Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
-                Assert.assertTrue(r2.equals(new Estudiante("B", 2, 2, 2)));
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_MODIFICADO);
+            Assert.assertTrue(r1.equals(new Estudiante("A", 1, 1, 1)));
+            Assert.assertTrue(r2.equals(new Estudiante("B", 2, 2, 2)));
+            llamado[0] = true;
+        });
         bdd.modificaRegistro(a, b);
         Assert.assertTrue(a.equals(b));
         Assert.assertTrue(llamado[0]);
         bdd = new BaseDeDatosEstudiantes();
         llamado[0] = false;
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_MODIFICADO);
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.REGISTRO_MODIFICADO);
+            llamado[0] = true;
+        });
         bdd.modificaRegistro(new Estudiante("A", 1, 1, 1),
-                             new Estudiante("B", 2, 2, 2));
+                new Estudiante("B", 2, 2, 2));
         Assert.assertFalse(llamado[0]);
     }
 
     /**
      * Prueba unitaria para {@link BaseDeDatos#limpia}.
      */
-    @Test public void testLimpia() {
+    @Test
+    public void testLimpia() {
         for (int i = 0; i < total; i++) {
             Estudiante e = TestEstudiante.estudianteAleatorio();
             bdd.agregaRegistro(e);
         }
         boolean[] llamado = { false };
         bdd.agregaEscucha((e, r1, r2) -> {
-                Assert.assertTrue(e == EventoBaseDeDatos.BASE_LIMPIADA);
-                Assert.assertTrue(r1 == null);
-                Assert.assertTrue(r2 == null);
-                llamado[0] = true;
-            });
+            Assert.assertTrue(e == EventoBaseDeDatos.BASE_LIMPIADA);
+            Assert.assertTrue(r1 == null);
+            Assert.assertTrue(r2 == null);
+            llamado[0] = true;
+        });
         Lista<Estudiante> registros = bdd.getRegistros();
         Assert.assertFalse(registros.esVacia());
         Assert.assertFalse(registros.getLongitud() == 0);
@@ -238,7 +247,8 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#guarda}.
      */
-    @Test public void testGuarda() {
+    @Test
+    public void testGuarda() {
         for (int i = 0; i < total; i++) {
             Estudiante e = TestEstudiante.estudianteAleatorio();
             bdd.agregaRegistro(e);
@@ -259,10 +269,10 @@ public class TestBaseDeDatosEstudiantes {
         int c = 0;
         for (Estudiante e : l) {
             String el = String.format("%s\t%d\t%2.2f\t%d",
-                                      e.getNombre(),
-                                      e.getCuenta(),
-                                      e.getPromedio(),
-                                      e.getEdad());
+                    e.getNombre(),
+                    e.getCuenta(),
+                    e.getPromedio(),
+                    e.getEdad());
             Assert.assertTrue(lineas[c++].equals(el));
         }
     }
@@ -270,30 +280,31 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#carga}.
      */
-    @Test public void testCarga() {
+    @Test
+    public void testCarga() {
         int ini = random.nextInt(1000000);
         String entrada = "";
         Estudiante[] estudiantes = new Estudiante[total];
         for (int i = 0; i < total; i++) {
             estudiantes[i] = TestEstudiante.estudianteAleatorio(ini + i);
             entrada += String.format("%s\t%d\t%2.2f\t%d\n",
-                                     estudiantes[i].getNombre(),
-                                     estudiantes[i].getCuenta(),
-                                     estudiantes[i].getPromedio(),
-                                     estudiantes[i].getEdad());
+                    estudiantes[i].getNombre(),
+                    estudiantes[i].getCuenta(),
+                    estudiantes[i].getPromedio(),
+                    estudiantes[i].getEdad());
             bdd.agregaRegistro(estudiantes[i]);
         }
         int[] contador = { 0 };
         boolean[] llamado = { false };
         bdd.agregaEscucha((e, r1, r2) -> {
-                if (e == EventoBaseDeDatos.BASE_LIMPIADA)
-                    llamado[0] = true;
-                if (e == EventoBaseDeDatos.REGISTRO_AGREGADO) {
-                    contador[0] ++;
-                    Assert.assertTrue(r1 != null);
-                    Assert.assertTrue(r2 == null);
-                }
-            });
+            if (e == EventoBaseDeDatos.BASE_LIMPIADA)
+                llamado[0] = true;
+            if (e == EventoBaseDeDatos.REGISTRO_AGREGADO) {
+                contador[0]++;
+                Assert.assertTrue(r1 != null);
+                Assert.assertTrue(r2 == null);
+            }
+        });
         try {
             StringReader srInt = new StringReader(entrada);
             BufferedReader in = new BufferedReader(srInt, 8192);
@@ -312,16 +323,16 @@ public class TestBaseDeDatosEstudiantes {
         contador[0] = 0;
         llamado[0] = false;
         entrada = String.format("%s\t%d\t%2.2f\t%d\n",
-                                estudiantes[0].getNombre(),
-                                estudiantes[0].getCuenta(),
-                                estudiantes[0].getPromedio(),
-                                estudiantes[0].getEdad());
+                estudiantes[0].getNombre(),
+                estudiantes[0].getCuenta(),
+                estudiantes[0].getPromedio(),
+                estudiantes[0].getEdad());
         entrada += " \n";
         entrada += String.format("%s\t%d\t%2.2f\t%d\n",
-                                 estudiantes[1].getNombre(),
-                                 estudiantes[1].getCuenta(),
-                                 estudiantes[1].getPromedio(),
-                                 estudiantes[1].getEdad());
+                estudiantes[1].getNombre(),
+                estudiantes[1].getCuenta(),
+                estudiantes[1].getPromedio(),
+                estudiantes[1].getEdad());
         try {
             StringReader srInt = new StringReader(entrada);
             BufferedReader in = new BufferedReader(srInt, 8192);
@@ -348,7 +359,8 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatosEstudiantes#creaRegistro}.
      */
-    @Test public void testCreaRegistro() {
+    @Test
+    public void testCreaRegistro() {
         Estudiante e = bdd.creaRegistro();
         Assert.assertTrue(e.getNombre() == null);
         Assert.assertTrue(e.getCuenta() == 0);
@@ -359,12 +371,13 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatosEstudiantes#buscaRegistros}.
      */
-    @Test public void testBuscaRegistros() {
+    @Test
+    public void testBuscaRegistros() {
         Estudiante[] estudiantes = new Estudiante[total];
         int ini = 1000000 + random.nextInt(999999);
         for (int i = 0; i < total; i++) {
-            Estudiante e =  new Estudiante(String.valueOf(ini+i),
-                                           ini+i, (i * 10.0) / total, i);
+            Estudiante e = new Estudiante(String.valueOf(ini + i),
+                    ini + i, (i * 10.0) / total, i);
             estudiantes[i] = e;
             bdd.agregaRegistro(e);
         }
@@ -373,7 +386,7 @@ public class TestBaseDeDatosEstudiantes {
         Lista<Estudiante> l;
         int i;
 
-        for (int k = 0; k < total/10 + 3; k++) {
+        for (int k = 0; k < total / 10 + 3; k++) {
             i = random.nextInt(total);
             estudiante = estudiantes[i];
 
@@ -385,7 +398,7 @@ public class TestBaseDeDatosEstudiantes {
                 Assert.assertTrue(e.getNombre().indexOf(nombre) > -1);
             int n = nombre.length();
             String bn = nombre.substring(random.nextInt(2),
-                                         2 + random.nextInt(n-2));
+                    2 + random.nextInt(n - 2));
             l = bdd.buscaRegistros(CampoEstudiante.NOMBRE, bn);
             Assert.assertTrue(l.getLongitud() > 0);
             Assert.assertTrue(l.contiene(estudiante));
@@ -433,7 +446,7 @@ public class TestBaseDeDatosEstudiantes {
         }
 
         l = bdd.buscaRegistros(CampoEstudiante.NOMBRE,
-                               "xxx-nombre");
+                "xxx-nombre");
         Assert.assertTrue(l.esVacia());
         l = bdd.buscaRegistros(CampoEstudiante.CUENTA, 9123456);
         Assert.assertTrue(l.esVacia());
@@ -463,13 +476,15 @@ public class TestBaseDeDatosEstudiantes {
         try {
             l = bdd.buscaRegistros(null, null);
             Assert.fail();
-        } catch (IllegalArgumentException iae) {}
+        } catch (IllegalArgumentException iae) {
+        }
     }
 
     /**
      * Prueba unitaria para {@link BaseDeDatos#agregaEscucha}.
      */
-    @Test public void testAgregaEscucha() {
+    @Test
+    public void testAgregaEscucha() {
         int[] c = new int[total];
         for (int i = 0; i < total; i++) {
             final int j = i;
@@ -483,10 +498,10 @@ public class TestBaseDeDatosEstudiantes {
     /**
      * Prueba unitaria para {@link BaseDeDatos#eliminaEscucha}.
      */
-    @Test public void testEliminaEscucha() {
+    @Test
+    public void testEliminaEscucha() {
         int[] c = new int[total];
-        Lista<EscuchaBaseDeDatos<Estudiante>> escuchas =
-            new Lista<EscuchaBaseDeDatos<Estudiante>>();
+        Lista<EscuchaBaseDeDatos<Estudiante>> escuchas = new Lista<EscuchaBaseDeDatos<Estudiante>>();
         for (int i = 0; i < total; i++) {
             final int j = i;
             EscuchaBaseDeDatos<Estudiante> escucha = (e, r1, r2) -> c[j]++;

@@ -40,7 +40,16 @@ public class DialogoEditaEstudiante extends Stage {
             setScene(scene);
 
             controlador.setEscenario(this);
-
+            controlador.setEstudiante(estudiante);
+            if (estudiante == null) {
+                setTitle(" Agregar ␣ estudiante ");
+                controlador.setVerbo(" Agregar ");
+            } else {
+                setTitle(" Editar ␣ estudiante ");
+                controlador.setVerbo(" Actualizar ");
+            }
+            setOnShown(w -> controlador.defineFoco());
+            setResizable(false);
         } catch (IOException ioe) {
             throw new IOException();
         }

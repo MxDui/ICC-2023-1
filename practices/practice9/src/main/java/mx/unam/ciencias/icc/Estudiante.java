@@ -307,15 +307,15 @@ public class Estudiante implements Registro<Estudiante, CampoEstudiante> {
                 } else if ((Integer) valor < 0) {
                     return false;
                 }
-                return getCuenta() == (Integer) valor;
+                return getCuenta() >= (Integer) valor;
             case PROMEDIO:
                 if (!(valor instanceof Double))
                     return false;
-                return getPromedio() == (Double) valor;
+                return getPromedio() >= (Double) valor;
             case EDAD:
                 if (!(valor instanceof Integer))
                     return false;
-                return getEdad() == (Integer) valor;
+                return getEdad() >= (Integer) valor;
             default:
                 return false;
         }
