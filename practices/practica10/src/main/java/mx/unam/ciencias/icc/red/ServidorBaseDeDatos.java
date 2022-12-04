@@ -70,8 +70,11 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
 
                 anotaMensaje("Conexión recibida de: %s.",
                         socket.getInetAddress().getCanonicalHostName());
-                anotaMensaje("Serial de conexión: %d.",
-                        conexion.getSerie());
+                anotaMensaje("Serie de conexión: %d.",
+                        Integer.valueOf(socket.getPort()));
+
+                // set the port to the connection
+                puerto = socket.getPort();
 
                 conexion.agregaEscucha((con, men) -> mensajeRecibido(con, men));
 
@@ -93,6 +96,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      */
     public void agregaEscucha(EscuchaServidor escucha) {
         // Aquí va su código.
+        escuchas.agregaFinal(escucha);
     }
 
     /**
@@ -176,14 +180,14 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
 
     /* Maneja el mensaje BASE_DE_DATOS. */
     private void baseDeDatos(Conexion<R> conexion) {
-        anotaMensaje("Base de datos pedida por %d.", conexion.getSerie());
+        anotaMensaje("Base de datos pedida por %d.", puerto);
 
         try {
             conexion.enviaMensaje(Mensaje.BASE_DE_DATOS);
             conexion.enviaBaseDeDatos();
         } catch (IOException ioe) {
             anotaMensaje("Error al enviar la base de datos a la conexión %d.",
-                    conexion.getSerie());
+                    puerto);
         }
     }
 
@@ -201,7 +205,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
                 R registro = conexion.recibeRegistro();
                 agregaRegistro(registro);
 
-                anotaMensaje("Registro agregado por %d.", conexion.getSerie());
+                anotaMensaje("Registro agregado por %d.", puerto);
 
                 for (Conexion<R> con : conexiones) {
                     if (con == conexion)
@@ -212,7 +216,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
                 }
             } catch (IOException ioe) {
                 anotaMensaje("Error al agregar registro por la conexión %d.",
-                        conexion.getSerie());
+                        puerto);
             }
             guarda();
         } else if (mensaje == Mensaje.REGISTRO_ELIMINADO) {
@@ -233,7 +237,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
             R registro = conexion.recibeRegistro();
             eliminaRegistro(registro);
 
-            anotaMensaje("Registro eliminado por %d.", conexion.getSerie());
+            anotaMensaje("Registro eliminado por %d.", puerto);
 
             for (Conexion<R> con : conexiones) {
                 if (con == conexion)
@@ -244,7 +248,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
             }
         } catch (IOException ioe) {
             anotaMensaje("Error al eliminar registro por la conexión %d.",
-                    conexion.getSerie());
+                    puerto);
         }
         guarda();
     }
@@ -276,7 +280,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
             R registro2 = conexion.recibeRegistro();
             modificaRegistro(registro, registro2);
 
-            anotaMensaje("Registro modificado por %d.", conexion.getSerie());
+            anotaMensaje("Registro modificado por %d.", puerto);
 
             for (Conexion<R> con : conexiones) {
                 if (con == conexion)
@@ -288,7 +292,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
             }
         } catch (IOException ioe) {
             anotaMensaje("Error al modificar registro por la conexión %d.",
-                    conexion.getSerie());
+                    puerto);
         }
     }
 
@@ -323,13 +327,13 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      * @param conexion la conexión que realizó la solicitud.
      */
     private void eco(Conexion<R> conexion) {
-        anotaMensaje("Solicitud de eco de %d.", conexion.getSerie());
+        anotaMensaje("Solicitud de eco de %d.", puerto);
 
         try {
             conexion.enviaMensaje(Mensaje.ECO);
         } catch (IOException ioe) {
             anotaMensaje("Error al enviar ECO a la conexión %d.",
-                    conexion.getSerie());
+                    puerto);
         }
     }
 
@@ -340,7 +344,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      */
     private void error(Conexion<R> conexion) {
         anotaMensaje("Desconectando la conexión %d: Mensaje inválido.",
-                conexion.getSerie());
+                puerto);
         desconecta(conexion);
     }
 
@@ -355,7 +359,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
             conexiones.elimina(conexion);
         }
         anotaMensaje("La conexión %d ha sido desconectada.",
-                conexion.getSerie());
+                puerto);
     }
 
     /* Agrega el registro a la base de datos. */

@@ -375,8 +375,10 @@ public class TestServidorBaseDeDatosEstudiantes {
         Assert.assertTrue(c2.recibeMensaje() == Mensaje.REGISTRO_MODIFICADO);
         Estudiante t = new Estudiante(null, 0, 0, 0);
         t = c2.recibeEstudiante();
+        System.out.println(t);
         Assert.assertTrue(t.equals(e));
         t = c2.recibeEstudiante();
+        System.out.println(t);
         Assert.assertTrue(t.equals(m));
         UtilRed.espera(10);
         validaArchivo(bdd);
@@ -454,6 +456,8 @@ public class TestServidorBaseDeDatosEstudiantes {
         Assert.assertTrue(i.hasNext());
         m = i.next();
         String r = String.format("Solicitud de eco de %d.", serie);
+        System.out.println(m);
+        System.out.println(r);
         Assert.assertTrue(m.equals(r));
         Assert.assertTrue(i.hasNext());
         m = i.next();
