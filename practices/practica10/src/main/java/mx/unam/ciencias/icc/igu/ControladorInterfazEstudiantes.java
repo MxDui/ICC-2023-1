@@ -3,27 +3,21 @@ package mx.unam.ciencias.icc.igu;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Optional;
+
 import javafx.application.Platform;
-import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Scene;
-import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
-import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
@@ -109,6 +103,11 @@ public class ControladorInterfazEstudiantes {
     private void cambiaConexion(ActionEvent evento) {
         // Aquí va su código.
 
+        if (!conectado)
+            conectar();
+        else
+            desconectar();
+
     }
 
     /**
@@ -128,24 +127,122 @@ public class ControladorInterfazEstudiantes {
     @FXML
     private void agregaEstudiante(ActionEvent evento) {
         // Aquí va su código.
+        DialogoEditaEstudiante dialogo;
+        try {
+            dialogo = new DialogoEditaEstudiante(escenario, null);
+        } catch (IOException ioe) {
+            String mensaje = (" Ocurrió un error al tratar de cargar el " +
+                    "archivo fxml del diálogo.");
+            dialogoError(" Error al cargar diálogo", mensaje);
+            return;
+        }
+        dialogo.showAndWait();
+        tabla.requestFocus();
+        if (!dialogo.isAceptado())
+            return;
+        bdd.agregaRegistro(dialogo.getEstudiante());
+        try {
+            conexion.enviaMensaje(Mensaje.REGISTRO_AGREGADO);
+            System.out.println("Se envió el mensaje de registro agregado");
+            conexion.enviaRegistro(dialogo.getEstudiante());
+        } catch (IOException ioe) {
+            dialogoError("Error con el servidor",
+                    "No se pudo enviar un estudiante a agregar.");
+        }
     }
 
     /* Edita un estudiante. */
     @FXML
     private void editaEstudiante(ActionEvent evento) {
         // Aquí va su código.
+        int r = seleccion.get(0).getRow();
+        Estudiante estudiante = renglones.get(r);
+        DialogoEditaEstudiante dialogo;
+        try {
+            dialogo = new DialogoEditaEstudiante(escenario,
+                    estudiante);
+        } catch (IOException ioe) {
+            String mensaje = (" Ocurri ó␣un␣ error ␣al␣ tratar ␣de␣" +
+                    " cargar ␣el␣diá logo ␣de␣ estudiante .");
+            dialogoError(" Error ␣al␣ cargar ␣ interfaz ", mensaje);
+            return;
+        }
+        dialogo.showAndWait();
+        tabla.requestFocus();
+        if (!dialogo.isAceptado())
+            return;
+        try {
+            conexion.enviaMensaje(Mensaje.REGISTRO_MODIFICADO);
+            conexion.enviaRegistro(estudiante);
+            conexion.enviaRegistro(dialogo.getEstudiante());
+        } catch (IOException ioe) {
+            dialogoError("Error con el servidor",
+                    "No se pudieron enviar estudiantes a modificar.");
+        }
+        bdd.modificaRegistro(estudiante, dialogo.getEstudiante());
     }
 
     /* Elimina uno o varios estudiantes. */
     @FXML
     private void eliminaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
+        int s = seleccion.size();
+        String titulo = (s > 1) ? " Elimina  estudiantes " : " Elimina  estudiante ";
+        String mensaje = (s > 1) ? " Esto eliminará a los estudiantes seleccionados "
+                : " Esto eliminará al estudiante seleccionado ";
+        String aceptar = titulo;
+        String cancelar = (s > 1) ? " Conservar estudiantes " : " Conservar estudiante ";
+        if (!dialogoDeConfirmacion(
+                titulo, mensaje, "¿Está seguro ?",
+                aceptar, cancelar))
+            return;
+        Lista<Estudiante> aEliminar = new Lista<Estudiante>();
+        for (TablePosition tp : seleccion)
+            aEliminar.agregaFinal(renglones.get(tp.getRow()));
+        modeloSeleccion.clearSelection();
+
+        for (Estudiante e : aEliminar) {
+            bdd.eliminaRegistro(e);
+            renglones.remove(e);
+            try {
+                conexion.enviaMensaje(Mensaje.REGISTRO_ELIMINADO);
+                conexion.enviaRegistro(e);
+            } catch (IOException ioe) {
+                dialogoError("Error con el servidor",
+                        "No se pudo enviar un estudiante a eliminar.");
+            }
+        }
     }
 
     /* Busca estudiantes. */
     @FXML
     private void buscaEstudiantes(ActionEvent evento) {
         // Aquí va su código.
+        try {
+
+            DialogoBuscaEstudiantes dialogo = new DialogoBuscaEstudiantes(escenario);
+            dialogo.showAndWait();
+
+            if (!dialogo.isAceptado())
+                return;
+
+            Lista<Estudiante> estudiantes = bdd.buscaRegistros(
+                    dialogo.getCampo(), dialogo.getValor());
+
+            modeloSeleccion.clearSelection();
+
+            for (Estudiante estudiante : estudiantes) {
+                modeloSeleccion.select(estudiante);
+            }
+
+        } catch (IOException ioe) {
+
+            String mensaje = String.format("Ocurrió un error al tratar de " + "cargar el diálogo de búsqueda.");
+            dialogoError("Error al cargar diálogo de búsqueda", mensaje);
+            return;
+
+        }
+
     }
 
     /* Muestra un diálogo con información del programa. */
@@ -175,7 +272,38 @@ public class ControladorInterfazEstudiantes {
 
     /* Conecta el cliente con el servidor. */
     private void conectar() {
+        String direccion = "localhost";
+        int puerto = 5000;
         // Aquí va su código.
+       
+        try {
+            DialogoConectar dialogo = new DialogoConectar(escenario);
+            dialogo.showAndWait();
+            if (!dialogo.isAceptado())
+                return;
+            direccion = dialogo.getDireccion();
+            puerto = dialogo.getPuerto();
+        } catch (IOException ioe) {
+            String mensaje = String.format("Ocurrió un error al tratar de " + "cargar el diálogo de conexión.");
+            dialogoError("Error al cargar diálogo de conexión", mensaje);
+            return;
+        }
+
+        try {
+            Socket enchufe = new Socket(direccion, puerto);
+            conexion = new Conexion<Estudiante>(bdd, enchufe);
+            conexion.agregaEscucha((c, m) -> mensajeRecibido(c, m));
+            conexion.enviaMensaje(Mensaje.BASE_DE_DATOS);
+            new Thread(() -> conexion.recibeMensajes()).start();
+        } catch (IOException ioe) {
+            conexion = null;
+            String mensaje = String.format("Ocurrió un error al tratar de " +
+                    "conectarnos a %s:%d.\n", direccion, puerto);
+            dialogoError("Error al establecer conexión", mensaje);
+            System.out.println(ioe.getMessage());
+            return;
+        }
+        setConectado(true);
     }
 
     /* Desconecta el cliente del servidor. */
@@ -212,13 +340,12 @@ public class ControladorInterfazEstudiantes {
                 renglones.clear();
                 break;
             case REGISTRO_AGREGADO:
-                renglones.add(estudiante1);
-                tabla.sort();
+                agregaEstudiante(estudiante1);
                 break;
             case REGISTRO_ELIMINADO:
-                renglones.remove(estudiante1);
-                tabla.sort();
+                eliminaEstudiante(estudiante1);
                 break;
+
             case REGISTRO_MODIFICADO:
                 Platform.runLater(() -> tabla.sort());
                 break;
@@ -259,36 +386,123 @@ public class ControladorInterfazEstudiantes {
     /* Recibe los mensajes de la conexión. */
     private void mensajeRecibido(Conexion<Estudiante> conexion, Mensaje mensaje) {
         // Aquí va su código.
+
+        if (conectado) {
+            switch (mensaje) {
+                case BASE_DE_DATOS:
+                    baseDeDatos(conexion);
+                    break;
+                case REGISTRO_AGREGADO:
+                    registroAlterado(conexion, mensaje);
+                    break;
+                case REGISTRO_ELIMINADO:
+                    registroAlterado(conexion, mensaje);
+                    break;
+                case REGISTRO_MODIFICADO:
+                    registroModificado(conexion);
+                    break;
+                case DESCONECTAR:
+                    desconectar();
+                    break;
+                case GUARDA:
+                    break;
+                case DETENER_SERVICIO:
+                    break;
+                case ECO:
+                    break;
+                default:
+                    Platform.runLater(() -> dialogoError("Error con el servidor",
+                            "Mensaje inválido recibido. " +
+                                    "Se finalizará la conexión."));
+                    break;
+
+            }
+        }
     }
 
     /* Maneja el mensaje BASE_DE_DATOS. */
     private void baseDeDatos(Conexion<Estudiante> conexion) {
         // Aquí va su código.
+        try {
+            conexion.recibeBaseDeDatos();
+        } catch (IOException ioe) {
+            String m = "No se pudo recibir la base de datos. " +
+                    "Se finalizará la conexión.";
+            Platform.runLater(() -> dialogoError("Error con el servidor", m));
+            return;
+        }
     }
 
     /* Maneja los mensajes REGISTRO_AGREGADO y REGISTRO_MODIFICADO. */
     private void registroAlterado(Conexion<Estudiante> conexion,
             Mensaje mensaje) {
         // Aquí va su código.
+        Estudiante e;
+        try {
+            e = conexion.recibeRegistro();
+        } catch (IOException ioe) {
+            String m = "No se pudo recibir un registro. " +
+                    "Se finalizará la conexión.";
+            Platform.runLater(() -> dialogoError("Error con el servidor", m));
+            return;
+        }
+        if (mensaje == Mensaje.REGISTRO_AGREGADO)
+            bdd.agregaRegistro(e);
+
+        else
+            bdd.eliminaRegistro(e);
     }
 
     /* Maneja el mensaje REGISTRO_MODIFICADO. */
     private void registroModificado(Conexion<Estudiante> conexion) {
         // Aquí va su código.
+        /*
+         * • registroModificado(). Se intenta recibir dos registros; si ocurre un error
+         * se
+         * muestra un diálogo de error con un mensaje apropiado. El diálogo se debe
+         * mostrar usando Platform.runLater().
+         * Si no hay error se modifica el primer registro con el segundo en la base de
+         * datos.
+         */
+
+        Estudiante e1, e2;
+        try {
+            e1 = conexion.recibeRegistro();
+            e2 = conexion.recibeRegistro();
+        } catch (IOException ioe) {
+            String m = "No se pudo recibir un registro. " +
+                    "Se finalizará la conexión.";
+            Platform.runLater(() -> dialogoError("Error con el servidor", m));
+            return;
+        }
+
     }
 
     /* Muestra un diálogo de error. */
     private void dialogoError(String titulo, String mensaje) {
         // Aquí va su código.
+        if (conectado)
+            desconectar();
+        Alert dialogo = new Alert(AlertType.ERROR);
+        dialogo.setTitle(titulo);
+        dialogo.setHeaderText(null);
+        dialogo.setContentText(mensaje);
+        dialogo.setOnCloseRequest(e -> tabla.getItems().clear());
+        dialogo.show();
+        escenario.requestFocus();
     }
 
     /* Agrega un estudiante a la tabla. */
     private void agregaEstudiante(Estudiante estudiante) {
         // Aquí va su código.
+        tabla.getItems().add(estudiante);
+        tabla.sort();
     }
 
     /* Elimina un estudiante de la tabla. */
     private void eliminaEstudiante(Estudiante estudiante) {
         // Aquí va su código.
+        tabla.getItems().remove(estudiante);
+        tabla.sort();
     }
 }

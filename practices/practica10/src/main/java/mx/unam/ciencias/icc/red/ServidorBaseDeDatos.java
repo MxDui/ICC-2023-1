@@ -288,7 +288,6 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
 
                 con.enviaMensaje(Mensaje.REGISTRO_MODIFICADO);
                 con.enviaRegistro(registro);
-
                 con.enviaRegistro(registro2);
 
             }
