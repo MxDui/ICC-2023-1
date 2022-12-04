@@ -147,7 +147,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
                     baseDeDatos(conexion);
                     break;
                 case REGISTRO_AGREGADO:
-                    registroAlterado(conexion);
+                    registroAlterado(conexion, mensaje);
                     break;
                 case REGISTRO_ELIMINADO:
                     registroEliminado(conexion);
@@ -194,27 +194,31 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      * 
      * @param conexion la conexión que agregó el registro.
      */
-    private void registroAlterado(Conexion<R> conexion) {
-        try {
-            R registro = conexion.recibeRegistro();
-            synchronized (bdd) {
-                bdd.agregaRegistro(registro);
+    private void registroAlterado(Conexion<R> conexion, Mensaje mensaje) {
+        // view if message is MENSAGE.REGISTRO_AGREGADO or MENSAGE.REGISTRO_MODIFICADO
+        if (mensaje == Mensaje.REGISTRO_AGREGADO) {
+            try {
+                R registro = conexion.recibeRegistro();
+                agregaRegistro(registro);
+
+                anotaMensaje("Registro agregado por %d.", conexion.getSerie());
+
+                for (Conexion<R> con : conexiones) {
+                    if (con == conexion)
+                        continue;
+
+                    con.enviaMensaje(Mensaje.REGISTRO_AGREGADO);
+                    con.enviaRegistro(registro);
+                }
+            } catch (IOException ioe) {
+                anotaMensaje("Error al agregar registro por la conexión %d.",
+                        conexion.getSerie());
             }
-
-            anotaMensaje("Registro agregado por %d.", conexion.getSerie());
-
-            for (Conexion<R> con : conexiones) {
-                if (con == conexion)
-                    continue;
-
-                con.enviaMensaje(Mensaje.REGISTRO_AGREGADO);
-                con.enviaRegistro(registro);
-            }
-        } catch (IOException ioe) {
-            anotaMensaje("Error al agregar registro por la conexión %d.",
-                    conexion.getSerie());
+            guarda();
+        } else if (mensaje == Mensaje.REGISTRO_ELIMINADO) {
+            registroEliminado(conexion);
         }
-        guarda();
+
     }
 
     /**
@@ -227,9 +231,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
     private void registroEliminado(Conexion<R> conexion) {
         try {
             R registro = conexion.recibeRegistro();
-            synchronized (bdd) {
-                bdd.eliminaRegistro(registro);
-            }
+            eliminaRegistro(registro);
 
             anotaMensaje("Registro eliminado por %d.", conexion.getSerie());
 
@@ -255,26 +257,39 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      * @param conexion la conexión que modificó el registro.
      */
     private void registroModificado(Conexion<R> conexion) {
+
+        /*
+         * Similar al anterior; en un try . . . catch recibimos dos registros de la
+         * conexión; si ocurre un error ejecutamos el método error() con el mensaje
+         * "Error recibiendo registros" y terminamos.
+         * De otra forma invocamos modificaRegistro(); y para todas las conexiones dis-
+         * tintas de la que envió el mensaje, les mandamos el mismo mensaje y los
+         * registros. Si ocurre un error ejecutamos el método error() con el mensaje
+         * "Error enviando registros"; pero no dejamos de recorrer la lista de
+         * conexiones.
+         * Al final anotamos el mensaje "Registro modificado por SERIE." con el número
+         * de serie de la conexión. Por último guardamos la base de datos en el disco
+         * duro con el método guarda().
+         */
         try {
-            R registro1 = conexion.recibeRegistro();
+            R registro = conexion.recibeRegistro();
             R registro2 = conexion.recibeRegistro();
-            synchronized (bdd) {
-                bdd.modificaRegistro(registro1, registro2);
-            }
+            modificaRegistro(registro, registro2);
+
+            anotaMensaje("Registro modificado por %d.", conexion.getSerie());
 
             for (Conexion<R> con : conexiones) {
                 if (con == conexion)
                     continue;
 
                 con.enviaMensaje(Mensaje.REGISTRO_MODIFICADO);
-                con.enviaRegistro(registro1);
+                con.enviaRegistro(registro);
                 con.enviaRegistro(registro2);
             }
         } catch (IOException ioe) {
             anotaMensaje("Error al modificar registro por la conexión %d.",
                     conexion.getSerie());
         }
-        guarda();
     }
 
     /**
@@ -283,7 +298,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      * @param conexion la conexión que solicitó ser desconectada.
      */
     private void desconectar(Conexion<R> conexion) {
-        desconectaConexion(conexion);
+        desconecta(conexion);
     }
 
     /**
@@ -293,7 +308,7 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
         continuaEjecucion = false;
 
         for (Conexion<R> con : conexiones)
-            desconectaConexion(con);
+            desconecta(con);
 
         try {
             servidor.close();
@@ -326,7 +341,45 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
     private void error(Conexion<R> conexion) {
         anotaMensaje("Desconectando la conexión %d: Mensaje inválido.",
                 conexion.getSerie());
-        desconectaConexion(conexion);
+        desconecta(conexion);
+    }
+
+    /**
+     * Desconecta a un cliente.
+     * 
+     * @param conexion la conexión a eliminar.
+     */
+    private void desconecta(Conexion<R> conexion) {
+        conexion.desconecta();
+        synchronized (conexiones) {
+            conexiones.elimina(conexion);
+        }
+        anotaMensaje("La conexión %d ha sido desconectada.",
+                conexion.getSerie());
+    }
+
+    /* Agrega el registro a la base de datos. */
+    private synchronized void agregaRegistro(R registro) {
+        // Aquí va su código.
+        synchronized (bdd) {
+            bdd.agregaRegistro(registro);
+        }
+    }
+
+    /* Elimina el registro de la base de datos. */
+    private synchronized void eliminaRegistro(R registro) {
+        // Aquí va su código.
+        synchronized (bdd) {
+            bdd.eliminaRegistro(registro);
+        }
+    }
+
+    /* Modifica el registro en la base de datos. */
+    private synchronized void modificaRegistro(R registro1, R registro2) {
+        // Aquí va su código.
+        synchronized (bdd) {
+            bdd.modificaRegistro(registro1, registro2);
+        }
     }
 
     /**
@@ -338,20 +391,6 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
     private void anotaMensaje(String formato, Object... argumentos) {
         for (EscuchaServidor escucha : escuchas)
             escucha.procesaMensaje(formato, argumentos);
-    }
-
-    /**
-     * Desconecta a un cliente.
-     * 
-     * @param conexion la conexión a eliminar.
-     */
-    private void desconectaConexion(Conexion<R> conexion) {
-        conexion.desconecta();
-        synchronized (conexiones) {
-            conexiones.elimina(conexion);
-        }
-        anotaMensaje("La conexión %d ha sido desconectada.",
-                conexion.getSerie());
     }
 
     /**
