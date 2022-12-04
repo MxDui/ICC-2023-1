@@ -17,7 +17,8 @@ import javafx.stage.Stage;
 public abstract class ControladorForma {
 
     /** El botón para aceptar. */
-    @FXML protected Button botonAceptar;
+    @FXML
+    protected Button botonAceptar;
 
     /** La ventana del diálogo. */
     protected Stage escenario;
@@ -26,27 +27,41 @@ public abstract class ControladorForma {
 
     /**
      * Manejador para cuando se activa el botón cancelar.
+     * 
      * @param evento el evento que generó la acción.
      */
-    @FXML protected void cancelar(ActionEvent evento) {
+    @FXML
+    protected void cancelar(ActionEvent evento) {
         // Aquí va su código.
+        aceptado = false;
+        escenario.close();
     }
 
     /**
      * Define el escenario del diálogo.
+     * 
      * @param escenario el nuevo escenario del diálogo.
      */
     public void setEscenario(Stage escenario) {
         // Aquí va su código.
+        this.escenario = escenario;
+        Scene escena = escenario.getScene();
+        KeyCodeCombination combinacion;
+        combinacion = new KeyCodeCombination(KeyCode.ENTER,
+                KeyCombination.CONTROL_DOWN);
+        ObservableMap<KeyCombination, Runnable> accs = escena.getAccelerators();
+        accs.put(combinacion, () -> botonAceptar.fire());
     }
 
     /**
      * Nos dice si el usuario activó el botón de aceptar.
+     * 
      * @return <code>true</code> si el usuario activó el botón de aceptar,
      *         <code>false</code> en otro caso.
      */
     public boolean isAceptado() {
         // Aquí va su código.
+        return aceptado;
     }
 
     /**
