@@ -141,10 +141,12 @@ public class ControladorInterfazEstudiantes {
         if (!dialogo.isAceptado())
             return;
         bdd.agregaRegistro(dialogo.getEstudiante());
+
         try {
             conexion.enviaMensaje(Mensaje.REGISTRO_AGREGADO);
-            System.out.println("Se envió el mensaje de registro agregado");
             conexion.enviaRegistro(dialogo.getEstudiante());
+
+            System.out.println("Se envió el mensaje de registro agregado");
         } catch (IOException ioe) {
             dialogoError("Error con el servidor",
                     "No se pudo enviar un estudiante a agregar.");
@@ -171,6 +173,7 @@ public class ControladorInterfazEstudiantes {
         tabla.requestFocus();
         if (!dialogo.isAceptado())
             return;
+
         try {
             conexion.enviaMensaje(Mensaje.REGISTRO_MODIFICADO);
             conexion.enviaRegistro(estudiante);
@@ -275,7 +278,7 @@ public class ControladorInterfazEstudiantes {
         String direccion = "localhost";
         int puerto = 5000;
         // Aquí va su código.
-       
+
         try {
             DialogoConectar dialogo = new DialogoConectar(escenario);
             dialogo.showAndWait();
@@ -292,9 +295,9 @@ public class ControladorInterfazEstudiantes {
         try {
             Socket enchufe = new Socket(direccion, puerto);
             conexion = new Conexion<Estudiante>(bdd, enchufe);
-            conexion.agregaEscucha((c, m) -> mensajeRecibido(c, m));
-            conexion.enviaMensaje(Mensaje.BASE_DE_DATOS);
             new Thread(() -> conexion.recibeMensajes()).start();
+            conexion.enviaMensaje(Mensaje.BASE_DE_DATOS);
+            conexion.agregaEscucha((c, m) -> mensajeRecibido(c, m));
         } catch (IOException ioe) {
             conexion = null;
             String mensaje = String.format("Ocurrió un error al tratar de " +
@@ -345,7 +348,6 @@ public class ControladorInterfazEstudiantes {
             case REGISTRO_ELIMINADO:
                 eliminaEstudiante(estudiante1);
                 break;
-
             case REGISTRO_MODIFICADO:
                 Platform.runLater(() -> tabla.sort());
                 break;
@@ -386,7 +388,7 @@ public class ControladorInterfazEstudiantes {
     /* Recibe los mensajes de la conexión. */
     private void mensajeRecibido(Conexion<Estudiante> conexion, Mensaje mensaje) {
         // Aquí va su código.
-
+        System.out.println(mensaje);
         if (conectado) {
             switch (mensaje) {
                 case BASE_DE_DATOS:
