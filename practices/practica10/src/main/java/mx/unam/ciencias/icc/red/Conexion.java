@@ -140,15 +140,15 @@ public class Conexion<R extends Registro<R, ?>> {
      */
     public R recibeRegistro() throws IOException {
         // Aquí va su código.
+        R registro = bdd.creaRegistro();
         try {
 
-            R registro = bdd.creaRegistro();
             registro.deseria(in.readLine());
-            return registro;
-
+            
         } catch (ExcepcionLineaInvalida e) {
             throw new IOException("Error al recibir el registro");
         }
+        return registro;
 
     }
 
@@ -162,7 +162,6 @@ public class Conexion<R extends Registro<R, ?>> {
         // Aquí va su código.
         try {
             out.write(registro.seria());
-            out.newLine();
             out.flush();
         } catch (IOException e) {
             throw new IOException("Error al enviar el registro");

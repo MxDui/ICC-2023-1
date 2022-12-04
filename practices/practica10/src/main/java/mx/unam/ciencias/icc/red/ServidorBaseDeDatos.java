@@ -166,13 +166,13 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
                     detenerServicio();
                     break;
                 case GUARDA:
-
+                    guarda();
                     break;
                 case ECO:
                     eco(conexion);
                     break;
                 case INVALIDO:
-                    error(conexion);
+                    error(conexion, "Desconectando la conexión %d: Mensaje inválido.");
                     break;
 
             }
@@ -278,8 +278,8 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
         try {
             R registro = conexion.recibeRegistro();
             R registro2 = conexion.recibeRegistro();
-            modificaRegistro(registro, registro2);
 
+            modificaRegistro(registro, registro2);
             anotaMensaje("Registro modificado por %d.", puerto);
 
             for (Conexion<R> con : conexiones) {
@@ -288,12 +288,18 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
 
                 con.enviaMensaje(Mensaje.REGISTRO_MODIFICADO);
                 con.enviaRegistro(registro);
+
                 con.enviaRegistro(registro2);
+
             }
-        } catch (IOException ioe) {
+
+        } catch (
+
+        IOException ioe) {
             anotaMensaje("Error al modificar registro por la conexión %d.",
                     puerto);
         }
+        guarda();
     }
 
     /**
@@ -342,10 +348,11 @@ public abstract class ServidorBaseDeDatos<R extends Registro<R, ?>> {
      * 
      * @param conexion la conexión que mandó el mensaje.
      */
-    private void error(Conexion<R> conexion) {
-        anotaMensaje("Desconectando la conexión %d: Mensaje inválido.",
-                puerto);
+    private void error(Conexion<R> conexion, String mensaje) {
+        // Aquí va su código.
+        anotaMensaje(mensaje, puerto);
         desconecta(conexion);
+
     }
 
     /**
