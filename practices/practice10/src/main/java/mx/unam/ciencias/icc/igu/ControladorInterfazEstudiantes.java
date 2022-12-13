@@ -3,21 +3,27 @@ package mx.unam.ciencias.icc.igu;
 import java.io.IOException;
 import java.net.Socket;
 import java.util.Optional;
-
 import javafx.application.Platform;
+import javafx.collections.ListChangeListener.Change;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TablePosition;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.AnchorPane;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
@@ -95,7 +101,6 @@ public class ControladorInterfazEstudiantes {
         setConectado(false);
         bdd = new BaseDeDatosEstudiantes();
         bdd.agregaEscucha((e, r1, r2) -> eventoBaseDeDatos(e, r1, r2));
-
     }
 
     /* Cambioa el estado de la conexión. */
@@ -107,7 +112,6 @@ public class ControladorInterfazEstudiantes {
             conectar();
         else
             desconectar();
-
     }
 
     /**
@@ -118,7 +122,6 @@ public class ControladorInterfazEstudiantes {
     @FXML
     public void salir(Event evento) {
         // Aquí va su código.
-
         desconectar();
         Platform.exit();
     }
@@ -146,7 +149,6 @@ public class ControladorInterfazEstudiantes {
             conexion.enviaMensaje(Mensaje.REGISTRO_AGREGADO);
             conexion.enviaRegistro(dialogo.getEstudiante());
 
-            System.out.println("Se envió el mensaje de registro agregado");
         } catch (IOException ioe) {
             dialogoError("Error con el servidor",
                     "No se pudo enviar un estudiante a agregar.");
@@ -245,7 +247,6 @@ public class ControladorInterfazEstudiantes {
             return;
 
         }
-
     }
 
     /* Muestra un diálogo con información del programa. */
@@ -260,7 +261,6 @@ public class ControladorInterfazEstudiantes {
         dialogo.setContentText("Aplicación para administrar estudiantes.\n" +
                 "Copyright © 2022 Facultad de Ciencias, UNAM.");
         dialogo.showAndWait();
-
     }
 
     /**
@@ -275,6 +275,7 @@ public class ControladorInterfazEstudiantes {
 
     /* Conecta el cliente con el servidor. */
     private void conectar() {
+        // Aquí va su código.
         String direccion = "localhost";
         int puerto = 5000;
         // Aquí va su código.
@@ -292,12 +293,18 @@ public class ControladorInterfazEstudiantes {
             return;
         }
 
+        // "Con el enchufe crea una conexión y dispara un hilo de ejecución con una
+        // lambda que ejecuta el método recibeMensajes(), además de agregarle un escucha
+        // a la conexión que ejecuta mensajeRecibido(); inmediatamente después envía el
+        // mensaje BASE_DE_DATOS para pedir la base de datos al servidor."
+
         try {
             Socket enchufe = new Socket(direccion, puerto);
             conexion = new Conexion<Estudiante>(bdd, enchufe);
-            new Thread(() -> conexion.recibeMensajes()).start();
+            conexion.agregaEscucha(this::mensajeRecibido);
             conexion.enviaMensaje(Mensaje.BASE_DE_DATOS);
-            conexion.agregaEscucha((c, m) -> mensajeRecibido(c, m));
+            new Thread(() -> conexion.recibeMensajes()).start();
+
         } catch (IOException ioe) {
             conexion = null;
             String mensaje = String.format("Ocurrió un error al tratar de " +
@@ -312,7 +319,6 @@ public class ControladorInterfazEstudiantes {
     /* Desconecta el cliente del servidor. */
     private void desconectar() {
         // Aquí va su código.
-
         if (!conectado)
             return;
         setConectado(false);
@@ -388,7 +394,6 @@ public class ControladorInterfazEstudiantes {
     /* Recibe los mensajes de la conexión. */
     private void mensajeRecibido(Conexion<Estudiante> conexion, Mensaje mensaje) {
         // Aquí va su código.
-        System.out.println(mensaje);
         if (conectado) {
             switch (mensaje) {
                 case BASE_DE_DATOS:
@@ -471,6 +476,9 @@ public class ControladorInterfazEstudiantes {
         try {
             e1 = conexion.recibeRegistro();
             e2 = conexion.recibeRegistro();
+
+            bdd.modificaRegistro(e1, e2);
+
         } catch (IOException ioe) {
             String m = "No se pudo recibir un registro. " +
                     "Se finalizará la conexión.";

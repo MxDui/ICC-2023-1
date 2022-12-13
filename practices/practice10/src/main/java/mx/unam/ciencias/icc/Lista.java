@@ -38,6 +38,8 @@ public class Lista<T> implements Iterable<T> {
         private Nodo(T elemento) {
             // Aquí va su código.
             this.elemento = elemento;
+            anterior = null;
+            siguiente = null;
 
         }
     }

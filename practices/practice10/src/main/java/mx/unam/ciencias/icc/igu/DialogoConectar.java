@@ -26,7 +26,6 @@ public class DialogoConectar extends Stage {
      */
     public DialogoConectar(Stage escenario) throws IOException {
         // Aquí va su código.
-
         try {
             ClassLoader cl = getClass().getClassLoader();
             FXMLLoader cargador = new FXMLLoader(cl.getResource(CONECTAR_FXML));
@@ -54,7 +53,6 @@ public class DialogoConectar extends Stage {
     public boolean isAceptado() {
         // Aquí va su código.
         return controlador.isAceptado();
-
     }
 
     /**

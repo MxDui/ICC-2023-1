@@ -168,7 +168,7 @@ public class ControladorInterfazEstudiantes {
     @FXML
     public void salir(Event evento) {
         // Aquí va su código.
-        if (!verificaGuardada("¿ Desea ␣ guardarla ␣ antes ␣de␣ salir ?")) {
+        if (verificaGuardada("¿ Desea ␣ guardarla ␣ antes ␣de␣ salir ?")) {
             evento.consume();
             return;
         }

@@ -11,8 +11,6 @@ import java.net.Socket;
 import mx.unam.ciencias.icc.EventoBaseDeDatos;
 import mx.unam.ciencias.icc.ExcepcionLineaInvalida;
 import mx.unam.ciencias.icc.BaseDeDatos;
-import mx.unam.ciencias.icc.BaseDeDatosEstudiantes;
-import mx.unam.ciencias.icc.Estudiante;
 import mx.unam.ciencias.icc.Lista;
 import mx.unam.ciencias.icc.Registro;
 
@@ -63,7 +61,6 @@ public class Conexion<R extends Registro<R, ?>> {
         } catch (IOException e) {
             throw new IOException("Error al crear la conexión");
         }
-
     }
 
     /**
@@ -73,7 +70,6 @@ public class Conexion<R extends Registro<R, ?>> {
      */
     public void recibeMensajes() {
         // Aquí va su código.
-
         try {
             String linea;
             while ((linea = in.readLine()) != null) {
@@ -86,15 +82,6 @@ public class Conexion<R extends Registro<R, ?>> {
                 notificaEscuchas(Mensaje.INVALIDO);
         }
         notificaEscuchas(Mensaje.DESCONECTAR);
-    }
-
-    /*
-     * Notifica a los escuchas de la conexión que se recibió un mensaje.
-     */
-
-    private void notificaEscuchas(Mensaje m) {
-        for (EscuchaConexion<R> e : escuchas)
-            e.mensajeRecibido(this, m);
     }
 
     /**
@@ -144,12 +131,11 @@ public class Conexion<R extends Registro<R, ?>> {
         try {
 
             registro.deseria(in.readLine());
-            
+
         } catch (ExcepcionLineaInvalida e) {
             throw new IOException("Error al recibir el registro");
         }
         return registro;
-
     }
 
     /**
@@ -193,7 +179,6 @@ public class Conexion<R extends Registro<R, ?>> {
     public int getSerie() {
         // Aquí va su código.
         return serie;
-
     }
 
     /**
@@ -201,7 +186,6 @@ public class Conexion<R extends Registro<R, ?>> {
      */
     public void desconecta() {
         // Aquí va su código.
-
         activa = false;
         try {
             enchufe.close();
@@ -229,5 +213,14 @@ public class Conexion<R extends Registro<R, ?>> {
     public void agregaEscucha(EscuchaConexion<R> escucha) {
         // Aquí va su código.
         escuchas.agregaFinal(escucha);
+    }
+
+    /*
+     * Notifica a los escuchas de la conexión que se recibió un mensaje.
+     */
+
+    private void notificaEscuchas(Mensaje m) {
+        for (EscuchaConexion<R> e : escuchas)
+            e.mensajeRecibido(this, m);
     }
 }

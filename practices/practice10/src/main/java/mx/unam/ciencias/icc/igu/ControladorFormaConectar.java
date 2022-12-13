@@ -84,7 +84,7 @@ public class ControladorFormaConectar extends ControladorForma {
 
     }
 
-    /**
+    /**t
      * Regresa el puerto del diálogo.
      * 
      * @return el puerto del diálogo.

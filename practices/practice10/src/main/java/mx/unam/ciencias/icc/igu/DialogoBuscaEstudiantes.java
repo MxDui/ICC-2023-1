@@ -43,7 +43,6 @@ public class DialogoBuscaEstudiantes extends Stage {
         } catch (IOException ioe) {
             throw new IOException();
         }
-
     }
 
     /**
