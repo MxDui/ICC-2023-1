@@ -4,4 +4,4 @@ DIR="$(dirname $0)"
 
 mvn -q exec:java             \
     -f "${DIR}/../pom.xml"   \
-    -Dexec.mainClass=mx.unam.ciencias.icc.ServidorPractica10 -Dexec.args="$*"
+    -Dexec.mainClass=mx.unam.ciencias.icc.ServidorProyecto3 -Dexec.args="$*"
