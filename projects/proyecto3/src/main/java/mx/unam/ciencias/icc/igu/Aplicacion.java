@@ -13,8 +13,8 @@ import javafx.stage.Stage;
  */
 public class Aplicacion extends Application {
 
-    /* Vista de la interfaz estudiantes. */
-    private static final String INTERFAZ_LAPTOPS_FXML = "/fxml/interfaz-estudiantes.fxml";
+    /* Vista de la interfaz laptops. */
+    private static final String INTERFAZ_LAPTOPS_FXML = "/fxml/interfaz-laptops.fxml";
     /* Ícono de la Facultad de Ciencias. */
     private static final String ICONO_CIENCIAS = "icons/ciencias.png";
 
@@ -32,13 +32,13 @@ public class Aplicacion extends Application {
         cargador.setLocation(
                 getClass().getResource(INTERFAZ_LAPTOPS_FXML));
         BorderPane raiz = cargador.load();
-        // ControladorInterfazEstudiantes controlador = cargador.getController();
-        // controlador.setEscenario(escenario);
+        ControladorInterfazLaptops controlador = cargador.getController();
+        controlador.setEscenario(escenario);
 
-        // Scene escena = new Scene(raiz);
-        // escenario.setScene(escena);
-        // escenario.setTitle("Base de datos de estudiantes");
-        // escenario.getIcons().add(new Image(ICONO_CIENCIAS));
-        // escenario.show();
+        Scene escena = new Scene(raiz);
+        escenario.setScene(escena);
+        escenario.setTitle("Base de datos de laptops");
+        escenario.getIcons().add(new Image(ICONO_CIENCIAS));
+        escenario.show();
     }
 }
