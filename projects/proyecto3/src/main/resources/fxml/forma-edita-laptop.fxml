@@ -13,12 +13,12 @@
 
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="mx.unam.ciencias.icc.igu.ControladorFormaEditaLaptop"
-            prefWidth="360.0" prefHeight="175.0">
+            prefWidth="360.0" prefHeight="240.0">
   <stylesheets>
     <URL value="@style.css" />
   </stylesheets>
   <children>
-    <GridPane prefWidth="360.0" prefHeight="120.0"
+    <GridPane prefWidth="360.0" prefHeight="200.0"
               AnchorPane.leftAnchor="10.0"
               AnchorPane.rightAnchor="10.0"
               AnchorPane.topAnchor="10.0"
@@ -34,10 +34,10 @@
         <RowConstraints prefHeight="30.0" />
       </rowConstraints>
       <children>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="0"
-               text="Marca:"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="1"
                text="Modelo:" />
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="0"
+               text="Marca:"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="2"
                text="Precio(MXN):"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="3"
@@ -46,6 +46,14 @@
                 text="RAM(GB):"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="5"
                 text="Almacenamiento(GB):"/>
+          <EntradaVerificable fx:id="entradaModelo"
+                            style="-fx-background-color:FFCCCC;"
+                            GridPane.columnIndex="1"
+                            GridPane.rowIndex="1">
+          <tooltip>
+            <Tooltip text="El modelo debe tener al menos 1 caracteres"/>
+          </tooltip>
+        </EntradaVerificable>
 
         <EntradaVerificable fx:id="entradaMarca"
                             style="-fx-background-color:FFCCCC;"
@@ -55,20 +63,13 @@
             <Tooltip text="La marca debe tener al menos 1 caracteres"/>
           </tooltip>
         </EntradaVerificable>
-        <EntradaVerificable fx:id="entradaModelo"
-                            style="-fx-background-color:FFCCCC;"
-                            GridPane.columnIndex="1"
-                            GridPane.rowIndex="1">
-          <tooltip>
-            <Tooltip text="El modelo debe tener al menos 1 caracteres"/>
-          </tooltip>
-        </EntradaVerificable>
+      
         <EntradaVerificable fx:id="entradaPrecio"
                             style="-fx-background-color:FFCCCC;"
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="2">
           <tooltip>
-            <Tooltip text="El precio debe estar entre 0.0 y 1000000.0"/>
+            <Tooltip text="El precio debe estar entre 5000.0 y 1000000.0"/>
           </tooltip>
 
         </EntradaVerificable>
@@ -85,7 +86,7 @@
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="4">
           <tooltip>
-            <Tooltip text="La RAM debe estar entre 0.0 y 1000000.0"/>
+            <Tooltip text="La RAM debe estar entre 4 y 128"/>
           </tooltip>
         </EntradaVerificable>
         <EntradaVerificable fx:id="entradaAlmacenamiento"
@@ -93,7 +94,7 @@
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="5">
           <tooltip>
-            <Tooltip text="El almacenamiento debe estar entre 0.0 y 1000000.0"/>
+            <Tooltip text="El almacenamiento debe estar entre 256 y 10000"/>
           </tooltip>
         </EntradaVerificable>
 

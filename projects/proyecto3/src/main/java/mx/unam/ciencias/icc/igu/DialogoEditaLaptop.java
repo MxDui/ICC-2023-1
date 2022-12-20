@@ -50,7 +50,6 @@ public class DialogoEditaLaptop extends Stage {
             setOnShown(w -> controlador.defineFoco());
             setResizable(false);
         } catch (IOException ioe) {
-            System.out.println(ioe.getMessage());
             throw new IOException();
         }
     }

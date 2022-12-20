@@ -68,7 +68,6 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
     public void agregaRegistro(R registro) {
         // Aquí va su código.
 
-        // agregar el registro
         registros.agregaFinal(registro);
 
         // notificar a los escuchas

@@ -157,7 +157,7 @@ public class ControladorInterfazLaptops {
         Laptop laptop = renglones.get(r);
         DialogoEditaLaptop dialogo;
         try {
-            dialogo = new DialogoEditaLaptop(escenario,laptop);
+            dialogo = new DialogoEditaLaptop(escenario, laptop);
         } catch (IOException ioe) {
             String mensaje = (" Ocurri ó␣un␣ error ␣al␣ tratar ␣de␣" +
                     " cargar ␣el␣diá logo ␣de␣ laptop .");
@@ -294,7 +294,6 @@ public class ControladorInterfazLaptops {
             String mensaje = String.format("Ocurrió un error al tratar de " +
                     "conectarnos a %s:%d.\n", direccion, puerto);
             dialogoError("Error al establecer conexión", mensaje);
-            System.out.println(ioe.getMessage());
             return;
         }
         setConectado(true);
@@ -378,7 +377,6 @@ public class ControladorInterfazLaptops {
     /* Recibe los mensajes de la conexión. */
     private void mensajeRecibido(Conexion<Laptop> conexion, Mensaje mensaje) {
         // Aquí va su código.
-        System.out.println(mensaje);
         if (conectado) {
             switch (mensaje) {
                 case BASE_DE_DATOS:
@@ -418,9 +416,6 @@ public class ControladorInterfazLaptops {
         try {
 
             conexion.recibeBaseDeDatos();
-
-
-            
 
         } catch (IOException ioe) {
             String m = "No se pudo recibir la base de datos. " +
@@ -506,6 +501,5 @@ public class ControladorInterfazLaptops {
         tabla.sort();
     }
 }
-
 
 // make examples for bd serialize
