@@ -157,8 +157,7 @@ public class ControladorInterfazLaptops {
         Laptop laptop = renglones.get(r);
         DialogoEditaLaptop dialogo;
         try {
-            dialogo = new DialogoEditaLaptop(escenario,
-                    laptop);
+            dialogo = new DialogoEditaLaptop(escenario,laptop);
         } catch (IOException ioe) {
             String mensaje = (" Ocurri ó␣un␣ error ␣al␣ tratar ␣de␣" +
                     " cargar ␣el␣diá logo ␣de␣ laptop .");
@@ -283,11 +282,6 @@ public class ControladorInterfazLaptops {
             return;
         }
 
-        // "Con el enchufe crea una conexión y dispara un hilo de ejecución con una
-        // lambda que ejecuta el método recibeMensajes(), además de agregarle un escucha
-        // a la conexión que ejecuta mensajeRecibido(); inmediatamente después envía el
-        // mensaje BASE_DE_DATOS para pedir la base de datos al servidor."
-
         try {
             Socket enchufe = new Socket(direccion, puerto);
             conexion = new Conexion<Laptop>(bdd, enchufe);
@@ -384,6 +378,7 @@ public class ControladorInterfazLaptops {
     /* Recibe los mensajes de la conexión. */
     private void mensajeRecibido(Conexion<Laptop> conexion, Mensaje mensaje) {
         // Aquí va su código.
+        System.out.println(mensaje);
         if (conectado) {
             switch (mensaje) {
                 case BASE_DE_DATOS:
@@ -421,7 +416,12 @@ public class ControladorInterfazLaptops {
     private void baseDeDatos(Conexion<Laptop> conexion) {
         // Aquí va su código.
         try {
+
             conexion.recibeBaseDeDatos();
+
+
+            
+
         } catch (IOException ioe) {
             String m = "No se pudo recibir la base de datos. " +
                     "Se finalizará la conexión.";
@@ -506,3 +506,6 @@ public class ControladorInterfazLaptops {
         tabla.sort();
     }
 }
+
+
+// make examples for bd serialize

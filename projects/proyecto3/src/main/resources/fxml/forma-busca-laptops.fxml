@@ -45,16 +45,16 @@
                   prefWidth="250.0">
           <items>
             <FXCollections fx:factory="observableArrayList">
-              <CampoEstudiante fx:value="MARCA" />
-                <CampoEstudiante fx:value="MODELO" />
-                <CampoEstudiante fx:value="PRECIO" />
-                <CampoEstudiante fx:value="PROCESADOR" />
-                <CampoEstudiante fx:value="RAM" />
-                <CampoEstudiante fx:value="ALMACENAMIENTO" />
+              <CampoLaptop fx:value="MARCA" />
+                <CampoLaptop fx:value="MODELO" />
+                <CampoLaptop fx:value="PRECIO" />
+                <CampoLaptop fx:value="PROCESADOR" />
+                <CampoLaptop fx:value="RAM" />
+                <CampoLaptop fx:value="ALMACENAMIENTO" />
             </FXCollections>
           </items>
           <value>
-            <CampoEstudiante fx:value="MARCA" />
+            <CampoLaptop fx:value="MARCA" />
           </value>
         </ComboBox>
         <EntradaVerificable fx:id="entradaValor"
@@ -62,7 +62,7 @@
                             GridPane.columnIndex="1"
                             GridPane.rowIndex="1">
           <tooltip>
-            <Tooltip text="Buscar por nombre necesita al menos un carácter" />
+            <Tooltip text="Buscar por marca necesita al menos un carácter" />
           </tooltip>
         </EntradaVerificable>
       </children>

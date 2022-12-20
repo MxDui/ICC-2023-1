@@ -189,7 +189,7 @@ public abstract class BaseDeDatos<R extends Registro<R, C>, C extends Enum> {
                     String[] campos = linea.split("\t");
                     R r = creaRegistro();
 
-                    if (campos.length == 4) {
+                    if (campos.length == 6) {
                         r.deseria(linea);
                     } else {
                         break;

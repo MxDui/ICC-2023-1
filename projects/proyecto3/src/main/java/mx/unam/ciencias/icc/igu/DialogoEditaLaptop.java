@@ -21,9 +21,9 @@ public class DialogoEditaLaptop extends Stage {
     /**
      * Define el estado inicial de un diálogo para laptop.
      * 
-     * @param escenario  el escenario al que el diálogo pertenece.
-     * @param laptop el laptop; puede ser <code>null</code> para agregar
-     *                   un laptop.
+     * @param escenario el escenario al que el diálogo pertenece.
+     * @param laptop    el laptop; puede ser <code>null</code> para agregar
+     *                  un laptop.
      * @throws IOException si no se puede cargar el archivo FXML.
      */
     public DialogoEditaLaptop(Stage escenario,
@@ -50,6 +50,7 @@ public class DialogoEditaLaptop extends Stage {
             setOnShown(w -> controlador.defineFoco());
             setResizable(false);
         } catch (IOException ioe) {
+            System.out.println(ioe.getMessage());
             throw new IOException();
         }
     }

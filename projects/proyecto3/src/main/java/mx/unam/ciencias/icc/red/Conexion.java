@@ -92,7 +92,6 @@ public class Conexion<R extends Registro<R, ?>> {
     public void recibeBaseDeDatos() throws IOException {
         // Aquí va su código.
         try {
-
             bdd.carga(in);
 
         } catch (IOException e) {
@@ -107,9 +106,7 @@ public class Conexion<R extends Registro<R, ?>> {
      * @throws IOException si la base de datos no puede enviarse.
      */
     public void enviaBaseDeDatos() throws IOException {
-        // Aquí va su código.
         try {
-
             bdd.guarda(out);
             out.newLine();
             out.flush();

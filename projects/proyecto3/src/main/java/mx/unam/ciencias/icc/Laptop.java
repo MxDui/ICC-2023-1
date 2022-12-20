@@ -133,6 +133,7 @@ public class Laptop implements Registro<Laptop, CampoLaptop> {
             throw new IllegalArgumentException("Linea invalida");
 
         try {
+
             marca.set(campos[0]);
             modelo.set(campos[1]);
             precio.set(Double.parseDouble(campos[2]));
