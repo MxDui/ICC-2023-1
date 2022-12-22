@@ -34,9 +34,9 @@
         <RowConstraints prefHeight="30.0" />
       </rowConstraints>
       <children>
-        <Label GridPane.columnIndex="0" GridPane.rowIndex="1"
-               text="Modelo:" />
         <Label GridPane.columnIndex="0" GridPane.rowIndex="0"
+               text="Modelo:" />
+        <Label GridPane.columnIndex="0" GridPane.rowIndex="1"
                text="Marca:"/>
         <Label GridPane.columnIndex="0" GridPane.rowIndex="2"
                text="Precio(MXN):"/>
@@ -49,7 +49,7 @@
           <EntradaVerificable fx:id="entradaModelo"
                             style="-fx-background-color:FFCCCC;"
                             GridPane.columnIndex="1"
-                            GridPane.rowIndex="1">
+                            GridPane.rowIndex="0">
           <tooltip>
             <Tooltip text="El modelo debe tener al menos 1 caracteres"/>
           </tooltip>
@@ -58,7 +58,7 @@
         <EntradaVerificable fx:id="entradaMarca"
                             style="-fx-background-color:FFCCCC;"
                             GridPane.columnIndex="1"
-                            GridPane.rowIndex="0">
+                            GridPane.rowIndex="1">
           <tooltip>
             <Tooltip text="La marca debe tener al menos 1 caracteres"/>
           </tooltip>

@@ -30,16 +30,16 @@ public class ControladorFormaEditaLaptop extends ControladorFormaLaptop {
     /* Inicializa el estado de la forma. */
     @FXML
     private void initialize() {
-        entradaMarca.setVerificador(m -> verificaMarca(m));
         entradaModelo.setVerificador(mo -> verificaModelo(mo));
+        entradaMarca.setVerificador(m -> verificaMarca(m));
         entradaPrecio.setVerificador(p -> verificaPrecio(p));
         entradaProcesador.setVerificador(p -> verificaProcesador(p));
         entradaRam.setVerificador(r -> verificaRam(r));
         entradaAlmacenamiento.setVerificador(a -> verificaAlmacenamiento(a));
 
-        entradaMarca.textProperty().addListener(
-                (o, v, n) -> verificaLaptop());
         entradaModelo.textProperty().addListener(
+                (o, v, n) -> verificaLaptop());
+        entradaMarca.textProperty().addListener(
                 (o, v, n) -> verificaLaptop());
         entradaPrecio.textProperty().addListener(
                 (o, v, n) -> verificaLaptop());
@@ -74,7 +74,7 @@ public class ControladorFormaEditaLaptop extends ControladorFormaLaptop {
             laptop.setAlmacenamiento(almacenamiento);
 
         } else {
-            laptop = new Laptop(marca, modelo, precio, procesador, ram, almacenamiento);
+            laptop = new Laptop(modelo, marca, precio, procesador, ram, almacenamiento);
         }
     }
 
@@ -93,8 +93,8 @@ public class ControladorFormaEditaLaptop extends ControladorFormaLaptop {
         this.laptop = new Laptop(null, null, 0, null, 0, 0);
         this.laptop.actualiza(laptop);
 
-        entradaMarca.setText(laptop.getMarca());
         entradaModelo.setText(laptop.getModelo());
+        entradaMarca.setText(laptop.getMarca());
         String precio = String.format("%.2f", laptop.getPrecio());
         entradaPrecio.setText(precio);
         entradaProcesador.setText(laptop.getProcesador());
@@ -131,8 +131,8 @@ public class ControladorFormaEditaLaptop extends ControladorFormaLaptop {
     }
 
     private void verificaLaptop() {
-        boolean m = entradaMarca.esValida();
         boolean mo = entradaModelo.esValida();
+        boolean m = entradaMarca.esValida();
         boolean p = entradaPrecio.esValida();
         boolean e = entradaProcesador.esValida();
         boolean r = entradaRam.esValida();
