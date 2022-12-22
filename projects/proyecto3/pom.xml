@@ -87,7 +87,7 @@
         <configuration>
           <archive>
             <manifest>
-              <mainClass>mx.unam.ciencias.icc.proyecto3.Proyecto3</mainClass>
+              <mainClass>mx.unam.ciencias.icc.proyecto3.ServidorProyecto3</mainClass>
             </manifest>
           </archive>
         </configuration>
